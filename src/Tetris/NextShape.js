@@ -32,10 +32,15 @@ class NextShape extends React.Component {
     return min + Math.floor(Math.random() * (max - min + 1));
   }
 
+  randomNewShape() {
+    //TODO: extra rule, same shape should not generate 3 times in a row
+    return this.getShape(this.random(0, 6));
+  }
+
   render() {
     return (
       <>
-        <div className="game-title">Next Shape</div>
+        <div className="game-title">NEXT</div>
         {this.state.shape.map((value, index) => {
           return index === 3 ? (
             <>
@@ -49,10 +54,10 @@ class NextShape extends React.Component {
         <br />
         <button
           onClick={() => {
-            this.setState({ shape: this.getShape(this.random(0, 6)) });
+            this.setState({ shape: this.randomNewShape() });
           }}
         >
-          New shape
+          Random shape
         </button>
       </>
     );
