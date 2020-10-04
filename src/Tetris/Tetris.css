@@ -1,0 +1,22 @@
+.game-title{
+    font-weight: bold;
+    font-size: larger;
+    color: darkgreen;
+    margin: 20px;
+}
+
+.dot{
+    width: 20px;
+    height: 20px;
+    border: 2px solid #AAA; 
+    margin: 2px;
+
+    color: #AAA;
+    vertical-align: middle;
+    text-align: center;
+    display: inline-block;
+}
+
+.filled{
+    background-color: #DDD;
+}
