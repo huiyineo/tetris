@@ -7,7 +7,7 @@ class Dot extends React.Component {
 
   render() {
     return (
-      <div className={this.props.style === 0 ? "dot" : "dot filled"}>{this.props.style}</div>
+      <div className={this.props.style === 0 ? "dot" : "dot filled"}></div>
     );
   }
 }

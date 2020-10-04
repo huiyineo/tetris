@@ -1,22 +1,40 @@
-.game-title{
-    font-weight: bold;
-    font-size: larger;
-    color: darkgreen;
-    margin: 20px;
+.game-title {
+  font-weight: bold;
+  font-size: larger;
+  color: darkgreen;
+  margin: 20px;
 }
 
-.dot{
-    width: 20px;
-    height: 20px;
-    border: 2px solid #AAA; 
-    margin: 2px;
-
-    color: #AAA;
-    vertical-align: middle;
-    text-align: center;
-    display: inline-block;
+.next-shape-title{
+    text-transform: capitalize;
+    font-size: large;
+    color: #333;
+    margin-bottom: 10px;
 }
 
-.filled{
-    background-color: #DDD;
+.dot {
+  width: 24px;
+  height: 24px;
+  border: 2.5px solid #aaa;
+  margin: 2px;
+  display: inline-block;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.dot:after {
+  width: 16px;
+  height: 16px;
+  content: "";
+  background-color: #aaa;
+  display: block;
+  margin: -1px 0 0 -1px;
+}
+
+.filled {
+  border-color: #333;
+}
+
+.filled:after {
+  background-color: #333;
 }

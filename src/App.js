@@ -4,7 +4,11 @@ import "./App.css";
 import Tetris from "./Tetris/Tetris";
 
 function App() {
-  return <Tetris />;
+  return (
+    <div className="App">
+      <Tetris />
+    </div>
+  );
 }
 
 export default App;

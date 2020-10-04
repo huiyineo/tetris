@@ -40,7 +40,7 @@ class NextShape extends React.Component {
   render() {
     return (
       <>
-        <div className="game-title">NEXT</div>
+        <div className="next-shape-title">NEXT</div>
         {this.state.shape.map((value, index) => {
           return index === 3 ? (
             <>
@@ -51,6 +51,7 @@ class NextShape extends React.Component {
             <Dot key={index} style={value} />
           );
         })}
+        <br />
         <br />
         <button
           onClick={() => {
