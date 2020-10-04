@@ -38,28 +38,41 @@ class NextShape extends React.Component {
   }
 
   render() {
+    /*const smallBoard = (this.state.shape.map((value, index) => {
+        return (
+          <>
+          
+            <Dot key={index} isActivated={value === 0} />
+          </>
+        );
+      }));*/
+
     return (
       <>
         <div className="next-shape-title">NEXT</div>
-        {this.state.shape.map((value, index) => {
-          return index === 3 ? (
-            <>
-              <Dot key={index} style={value} />
-              <br />
-            </>
-          ) : (
-            <Dot key={index} style={value} />
-          );
-        })}
-        <br />
-        <br />
-        <button
-          onClick={() => {
-            this.setState({ shape: this.randomNewShape() });
-          }}
-        >
-          Random shape
-        </button>
+
+        <div>
+          <Dot isActivated={this.state.shape[0] === 0} />
+          <Dot isActivated={this.state.shape[1] === 0} />
+          <Dot isActivated={this.state.shape[2] === 0} />
+          <Dot isActivated={this.state.shape[3] === 0} />
+        </div>
+        <div>
+          <Dot isActivated={this.state.shape[4] === 0} />
+          <Dot isActivated={this.state.shape[5] === 0} />
+          <Dot isActivated={this.state.shape[6] === 0} />
+          <Dot isActivated={this.state.shape[7] === 0} />
+        </div>
+
+        <div className="button-space">
+          <button
+            onClick={() => {
+              this.setState({ shape: this.randomNewShape() });
+            }}
+          >
+            Random shape
+          </button>
+        </div>
       </>
     );
   }

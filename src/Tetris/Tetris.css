@@ -5,20 +5,19 @@
   margin: 20px;
 }
 
-.next-shape-title{
-    text-transform: capitalize;
-    font-size: large;
-    color: #333;
-    margin-bottom: 10px;
+.next-shape-title {
+  text-transform: capitalize;
+  font-size: large;
+  color: black;
+  margin-bottom: 10px;
 }
 
-.dot {
+/*.dot {
   width: 24px;
   height: 24px;
   border: 2.5px solid #aaa;
-  margin: 2px;
+  margin: 0 1px;
   display: inline-block;
-  padding: 2px;
   box-sizing: border-box;
 }
 
@@ -28,7 +27,7 @@
   content: "";
   background-color: #aaa;
   display: block;
-  margin: -1px 0 0 -1px;
+  margin: 1px 0 0 1px;
 }
 
 .filled {
@@ -37,4 +36,35 @@
 
 .filled:after {
   background-color: #333;
+}*/
+
+.dot {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border: 2px solid #879372;
+  margin: 0 2px 1px 0;
+  box-sizing: border-box;
+}
+
+.dot:after {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  background: #879372;
+  overflow: hidden;
+}
+
+.filled {
+    border-color: black;
+  }
+
+.filled:after {
+  background-color: #000;
+}
+
+.button-space {
+  margin-top: 10px;
 }
