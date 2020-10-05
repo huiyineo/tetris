@@ -31,7 +31,7 @@ class NextBlock extends React.Component {
         <div className="button-space">
           <button
             onClick={() => {
-              this.setState({ block: Block.random() });
+              this.setState({ block: Block.tgm3Random() });
             }}
           >
             Random block

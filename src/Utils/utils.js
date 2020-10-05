@@ -1,6 +1,8 @@
 const utils = {
   random: (min, max) => min + Math.floor(Math.random() * (max - min + 1)),
 
+  randomFromArray: (arr) => arr[utils.random(0, arr.length - 1)],
+
   printMatrix: (matrix) => {
     let output = "";
     const rowLen = matrix.length;
