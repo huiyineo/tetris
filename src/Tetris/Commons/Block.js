@@ -1,8 +1,8 @@
 import utils from "../../Utils/utils";
 
-const Shape = {
+const Block = {
   new: (index) => {
-    const shapes = [
+    const blocks = [
       [
         [1, 1, 0, 0],
         [0, 1, 1, 0],
@@ -33,21 +33,21 @@ const Shape = {
       ],
     ];
 
-    if (index < 0 || index >= shapes.length) {
+    if (index < 0 || index >= blocks.length) {
       return [
         [0, 0, 0, 0],
         [0, 0, 0, 0],
       ];
     }
 
-    return shapes[index];
+    return blocks[index];
   },
   random: () => {
     //TODO: extra rule, same shape should not generate 3 times in a row
     const index = utils.random(0, 6);
 
-    return Shape.new(index);
+    return Block.new(index);
   },
 };
 
-export default Shape;
+export default Block;

@@ -1,18 +1,18 @@
 import React from "react";
-import Dot from "./Dot";
-import Shape from "./Commons/Shape";
+import Dot from "./Commons/Dot";
+import Block from "./Commons/Block";
 
-class NextShape extends React.Component {
+class NextBlock extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      shape: Array(2).fill(Array(4).fill(0)),
+      block: Array(2).fill(Array(4).fill(0)),
     };
   }
 
   render() {
-    const smallBoard = this.state.shape.map((row, rowIdx) => {
+    const smallBoard = this.state.block.map((row, rowIdx) => {
       return (
         <div key={rowIdx}>
           {row.map((value, colIdx) => {
@@ -31,10 +31,10 @@ class NextShape extends React.Component {
         <div className="button-space">
           <button
             onClick={() => {
-              this.setState({ shape: Shape.random() });
+              this.setState({ block: Block.random() });
             }}
           >
-            Random shape
+            Random block
           </button>
         </div>
       </>
@@ -42,4 +42,4 @@ class NextShape extends React.Component {
   }
 }
 
-export default NextShape;
+export default NextBlock;

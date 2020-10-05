@@ -1,6 +1,6 @@
 import React from "react";
 
-class RotateShape extends React.Component {
+class RotateBlock extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -11,11 +11,11 @@ class RotateShape extends React.Component {
         <div className="section-title">Rotate</div>
 
         <div className="button-space">
-          <button onClick={() => {}}>Rotate shape</button>
+          <button onClick={() => {}}>Rotate block</button>
         </div>
       </>
     );
   }
 }
 
-export default RotateShape;
+export default RotateBlock;
