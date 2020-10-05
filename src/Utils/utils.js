@@ -32,6 +32,25 @@ const utils = {
 
     return rotatedMatrix;
   },
+
+  blockToMatrix: (block, row, col) => {
+    const matrix = [];
+    const blockRow = block.length;
+    const blockCol = block[0].length;
+
+    for (let i = 0; i < row; i++) {
+      matrix[i] = [];
+      for (let j = 0; j < col; j++) {
+        if (i < blockRow && j < blockCol) {
+          matrix[i][j] = block[i][j];
+        } else {
+          matrix[i][j] = 0;
+        }
+      }
+    }
+
+    return matrix;
+  },
 };
 
 export default utils;

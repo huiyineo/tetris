@@ -8,41 +8,30 @@ class RotateBlock extends React.Component {
     super(props);
 
     this.state = {
-      block: this.generateMatrixWithBlock(4, Block.tgm3Random()),
+      block: this.generateMatrixWithBlock(Block.tgm3Random()),
     };
   }
 
-  //Kaythi, I just try try, not work correctly, you continue w this
-  //TODO: work wrongly, not correct position
-  generateMatrixWithBlock(size, block) {
-    const matrix = [];
-    const blockRow = block.length;
-    const blockCol = block[0].length;
+  generateMatrixWithBlock(block) {
+    const len = block.content[0].length;
 
-    for (let i = 0; i < size; i++) {
-      matrix[i] = [];
-      for (let j = 0; j < size; j++) {
-        if (i < blockRow && j < blockCol) {
-          matrix[i][j] = block[i][j];
-        } else {
-          matrix[i][j] = 0;
-        }
-      }
-    }
+    block.content = utils.blockToMatrix(block.content, len, len);
 
-    return matrix;
+    return block;
   }
 
-  //Kaythi, I just try try, not work correctly, you continue w this
-  //TODO: rotate for whole matrix is not correct algorithm
   rotateBlock() {
     const current = this.state.block;
 
-    return utils.rotateMatrix(current);
+    if (current.name !== "O") {
+      current.content = utils.rotateMatrix(current.content);
+    }
+
+    return current;
   }
 
   render() {
-    const smallBoard = this.state.block.map((row, rowIdx) => {
+    const smallBoard = this.state.block.content.map((row, rowIdx) => {
       return (
         <div key={rowIdx}>
           {row.map((value, colIdx) => (

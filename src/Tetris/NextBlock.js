@@ -1,6 +1,7 @@
 import React from "react";
 import Dot from "./Commons/Dot";
 import Block from "./Commons/Block";
+import utils from "../Utils/utils";
 
 class NextBlock extends React.Component {
   constructor(props) {
@@ -31,7 +32,9 @@ class NextBlock extends React.Component {
         <div className="button-space">
           <button
             onClick={() => {
-              this.setState({ block: Block.tgm3Random() });
+              this.setState({
+                block: utils.blockToMatrix(Block.tgm3Random().content, 2, 4),
+              });
             }}
           >
             Random block

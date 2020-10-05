@@ -9,28 +9,28 @@ const Block = {
         [1, 1, 1, 1],
       ],
       J: [
-        [1, 0, 0, 0],
-        [1, 1, 1, 0],
+        [1, 0, 0],
+        [1, 1, 1],
       ],
       L: [
-        [0, 0, 1, 0],
-        [1, 1, 1, 0],
+        [0, 0, 1],
+        [1, 1, 1],
       ],
       O: [
-        [1, 1, 0, 0],
-        [1, 1, 0, 0],
+        [0, 1, 1, 0],
+        [0, 1, 1, 0],
       ],
       S: [
-        [0, 1, 1, 0],
-        [1, 1, 0, 0],
+        [0, 1, 1],
+        [1, 1, 0],
       ],
       T: [
-        [1, 1, 1, 0],
-        [0, 1, 0, 0],
+        [1, 1, 1],
+        [0, 1, 0],
       ],
       Z: [
-        [1, 1, 0, 0],
-        [0, 1, 1, 0],
+        [1, 1, 0],
+        [0, 1, 1],
       ],
     };
     return blocks[letter];
@@ -41,12 +41,13 @@ const Block = {
   },
 
   tgm3Random: () => {
-    /*const random = tgm3Randomizer();
-    const obj = random.next();
-    console.log(obj);*/
-    return Block.new(tgm3Randomizer().next().value);
+    const name = tgm3Rand.next().value;
+    return { name: name, content: Block.new(name) };
   },
 };
+
+//NOTE: new game need to reset this variable
+var tgm3Rand = tgm3Randomizer();
 
 //https://simon.lc/the-history-of-tetris-randomizers
 function* tgm3Randomizer() {
