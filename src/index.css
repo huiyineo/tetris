@@ -7,6 +7,8 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   direction: ltr;
+  overflow-y: scroll; 
+  padding: 0px 10px 30px 30px;
 }
 
 code {
