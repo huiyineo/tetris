@@ -8,7 +8,7 @@ class RotateBlock extends React.Component {
     super(props);
 
     this.state = {
-      block: this.generateMatrixWithBlock(Block.tgm3Random()),
+      block: this.generateMatrixWithBlock(Block.tgm3RandomNext()),
       blocks: [
         this.generateMatrixWithBlock(Block.new("I")),
         this.generateMatrixWithBlock(Block.new("J")),

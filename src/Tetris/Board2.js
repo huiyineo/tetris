@@ -16,6 +16,7 @@ class Board2 extends React.Component {
       board: dots,
       block: this.generateMatrixWithBlock(Block.simpleRandom()),
       position: [-3, 4],
+      blockNo: 1,
     };
 
     this.moveBlock();
@@ -35,40 +36,111 @@ class Board2 extends React.Component {
     return block;
   }
 
-  getNewBlock() {
+  createNewBlock() {
     this.setState({
-      block: this.generateMatrixWithBlock(Block.simpleRandom()),
-      position: [0, 4],
+      position: [-3, 4],
+      block: this.generateMatrixWithBlock(Block.tgm3RandomNew()),
     });
   }
 
-  moveBlock() {
+  isGameOver() {
+    const board = this.state.board;
+    const len = board[0].length;
+    for (let i = 0; i < len; i++) {
+      if (board[0][i] > 1) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  pinCurrentBlock() {
+    this.setState({ blockNo: this.state.blockNo + 1 });
+    return this.drawBlockInBoard(this.state.blockNo);
+  }
+
+  getNextPosition() {
+    if (this.state.position[0] + 1 === this.state.board.length) {
+      return this.state.position;
+    }
+    return [this.state.position[0] + 1, this.state.position[1]];
+  }
+
+  getPreviousPosition() {
+    if (this.state.position[0] - 1 < 0) {
+      return this.state.position;
+    }
+    return [this.state.position[0] - 1, this.state.position[1]];
+  }
+
+  drawMovingBlock() {
+    return this.drawBlockInBoard(1);
+  }
+
+  drawBlockInBoard(value) {
     const board = this.state.board;
     const block = this.state.block.content;
 
-    const len = this.state.block.content.length;
+    const len = block.length;
     const x = this.state.position[0];
     const y = this.state.position[1];
 
-    if (x + len > board.length /*&& hit not moving dot*/) {
-      this.getNewBlock();
-      return;
-    }
-
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
-        //Clear old moving dot
+        //Clear old block
         if (i + x - 1 >= 0 && board[i + x - 1][j + y] === 1) {
           board[i + x - 1][j + y] = 0;
         }
-        //Add new moving dot
-        if (i + x >= 0 && i + x < board.length) {
-          board[i + x][j + y] = block[i][j];
+        //Draw new block
+        if (i + x >= 0 && i + x < board.length && block[i][j] === 1) {
+          board[i + x][j + y] = value;
         }
       }
     }
 
-    this.setState({ board: board, position: [x + 1, y] });
+    return board;
+  }
+
+  hitNotMovingDot() {
+    const board = this.state.board;
+    const block = this.state.block.content;
+    const len = block.length;
+    const x = this.state.position[0];
+    const y = this.state.position[1];
+
+    for (let i = len - 1; i >= 0; i--) {
+        for (let j = 0; j < len; j++) {
+         
+          if (i + x >= 0 && i + x < board.length && block[i][j] === 1 && board[i + x][j + y] > 1 ) {
+            return true;
+          }
+        }
+      }
+    
+    return false;
+  }
+
+  moveBlock() {
+    if (this.isGameOver()) {
+      return;
+    }
+
+    let newBoard = this.state.block;
+
+    const isHitTheGround =
+      this.state.position[0] + this.state.block.content.length >
+      this.state.board.length;
+
+    if (isHitTheGround || this.hitNotMovingDot()) {
+      this.setState({ position: this.getPreviousPosition() });
+      newBoard = this.pinCurrentBlock();
+      this.setState({ board: newBoard });
+      this.createNewBlock();
+    } else {
+      newBoard = this.drawMovingBlock();
+      this.setState({ board: newBoard, position: this.getNextPosition() });
+    }
   }
 
   render() {
@@ -76,7 +148,7 @@ class Board2 extends React.Component {
       return (
         <div key={rowIdx}>
           {row.map((value, colIdx) => {
-            return <Dot key={colIdx} isActivated={value !== 0} />;
+            return <Dot key={colIdx} isActivated={value !== 0} value={value} />;
           })}
         </div>
       );

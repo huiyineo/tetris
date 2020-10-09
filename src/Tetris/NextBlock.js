@@ -33,7 +33,7 @@ class NextBlock extends React.Component {
           <button
             onClick={() => {
               this.setState({
-                block: utils.blockToMatrix(Block.tgm3Random().content, 2, 4),
+                block: utils.blockToMatrix(Block.tgm3RandomNext().content, 2, 4),
               });
             }}
           >

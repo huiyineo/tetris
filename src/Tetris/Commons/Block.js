@@ -76,8 +76,11 @@ const Block = {
     return Block.new(utils.randomFromArray(Block.pieces));
   },
 
-  tgm3Random: () => {
+  tgm3RandomNext: () => {
     return Block.next(tgm3Rand.next().value);
+  },
+  tgm3RandomNew: () => {
+    return Block.new(tgm3Rand.next().value);
   },
 };
 
