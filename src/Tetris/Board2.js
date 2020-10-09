@@ -18,8 +18,6 @@ class Board2 extends React.Component {
       position: [-3, 4],
       blockNo: 1,
     };
-
-    this.moveBlock();
   }
 
   componentDidMount() {
