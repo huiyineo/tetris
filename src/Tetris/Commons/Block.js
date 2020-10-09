@@ -2,38 +2,74 @@ import utils from "../../Utils/utils";
 
 const Block = {
   pieces: ["I", "J", "L", "O", "S", "T", "Z"],
+  blocks: {
+    I: [[1], [1], [1], [1]],
+    J: [
+      [0, 1],
+      [0, 1],
+      [1, 1],
+    ],
+    L: [
+      [1, 0],
+      [1, 0],
+      [1, 1],
+    ],
+    O: [
+      [1, 1],
+      [1, 1],
+    ],
+    S: [
+      [1, 0],
+      [1, 1],
+      [0, 1],
+    ],
+    T: [
+      [1, 0],
+      [1, 1],
+      [1, 0],
+    ],
+    Z: [
+      [0, 1],
+      [1, 1],
+      [1, 0],
+    ],
+  },
+  blocksForNext: {
+    I: [
+      [0, 0, 0, 0],
+      [1, 1, 1, 1],
+    ],
+    J: [
+      [1, 0, 0],
+      [1, 1, 1],
+    ],
+    L: [
+      [0, 0, 1],
+      [1, 1, 1],
+    ],
+    O: [
+      [0, 1, 1, 0],
+      [0, 1, 1, 0],
+    ],
+    S: [
+      [0, 1, 1],
+      [1, 1, 0],
+    ],
+    T: [
+      [1, 1, 1],
+      [0, 1, 0],
+    ],
+    Z: [
+      [1, 1, 0],
+      [0, 1, 1],
+    ],
+  },
   new: (letter) => {
-    let blocks = {
-      I: [
-        [0, 0, 0, 0],
-        [1, 1, 1, 1],
-      ],
-      J: [
-        [1, 0, 0],
-        [1, 1, 1],
-      ],
-      L: [
-        [0, 0, 1],
-        [1, 1, 1],
-      ],
-      O: [
-        [0, 1, 1, 0],
-        [0, 1, 1, 0],
-      ],
-      S: [
-        [0, 1, 1],
-        [1, 1, 0],
-      ],
-      T: [
-        [1, 1, 1],
-        [0, 1, 0],
-      ],
-      Z: [
-        [1, 1, 0],
-        [0, 1, 1],
-      ],
-    };
-    return { name: letter, content: blocks[letter] };
+    return { name: letter, content: Block.blocks[letter] };
+  },
+
+  next: (letter) => {
+    return { name: letter, content: Block.blocksForNext[letter] };
   },
 
   simpleRandom: () => {
@@ -41,7 +77,7 @@ const Block = {
   },
 
   tgm3Random: () => {
-    return Block.new(tgm3Rand.next().value);
+    return Block.next(tgm3Rand.next().value);
   },
 };
 

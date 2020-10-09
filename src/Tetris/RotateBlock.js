@@ -22,24 +22,16 @@ class RotateBlock extends React.Component {
   }
 
   generateMatrixWithBlock(block) {
-    const len = block.content[0].length;
+    const len = Math.max(block.content.length, block.content[0].length);
 
     block.content = utils.blockToMatrix(block.content, len, len);
 
     return block;
   }
 
-  rotateBlock(block) {
-    if (block.name !== "O") {
-      block.content = utils.rotateMatrix(block.content);
-    }
-
-    return block;
-  }
-
   rotateBlocks(blocks) {
     blocks.forEach((block) => {
-      block = this.rotateBlock(block);
+      block.content = utils.rotateMatrix(block.content);
     });
 
     return blocks;
