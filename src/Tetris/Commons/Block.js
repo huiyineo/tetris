@@ -33,7 +33,7 @@ const Block = {
         [0, 1, 1],
       ],
     };
-    return blocks[letter];
+    return { name: letter, content: blocks[letter] };
   },
 
   simpleRandom: () => {
@@ -41,8 +41,7 @@ const Block = {
   },
 
   tgm3Random: () => {
-    const name = tgm3Rand.next().value;
-    return { name: name, content: Block.new(name) };
+    return Block.new(tgm3Rand.next().value);
   },
 };
 

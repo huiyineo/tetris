@@ -3,6 +3,7 @@ import "./Tetris.css";
 import NextBlock from "./NextBlock";
 import RotateBlock from "./RotateBlock";
 import Board from "./Board";
+import Control from "./Control";
 
 
 class Tetris extends React.Component {
@@ -13,6 +14,7 @@ class Tetris extends React.Component {
         <Board />
         <NextBlock />
         <RotateBlock />
+        <Control />
       </>
     );
   }

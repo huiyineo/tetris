@@ -9,6 +9,15 @@ class RotateBlock extends React.Component {
 
     this.state = {
       block: this.generateMatrixWithBlock(Block.tgm3Random()),
+      blocks: [
+        this.generateMatrixWithBlock(Block.new("I")),
+        this.generateMatrixWithBlock(Block.new("J")),
+        this.generateMatrixWithBlock(Block.new("L")),
+        this.generateMatrixWithBlock(Block.new("O")),
+        this.generateMatrixWithBlock(Block.new("S")),
+        this.generateMatrixWithBlock(Block.new("T")),
+        this.generateMatrixWithBlock(Block.new("Z")),
+      ],
     };
   }
 
@@ -20,23 +29,55 @@ class RotateBlock extends React.Component {
     return block;
   }
 
-  rotateBlock() {
-    const current = this.state.block;
-
-    if (current.name !== "O") {
-      current.content = utils.rotateMatrix(current.content);
+  rotateBlock(block) {
+    if (block.name !== "O") {
+      block.content = utils.rotateMatrix(block.content);
     }
 
-    return current;
+    return block;
   }
 
-  render() {
-    const smallBoard = this.state.block.content.map((row, rowIdx) => {
+  rotateBlocks(blocks) {
+    blocks.forEach((block) => {
+      block = this.rotateBlock(block);
+    });
+
+    return blocks;
+  }
+
+  drawBlock(block) {
+    block.content.map((row, rowIdx) => {
       return (
         <div key={rowIdx}>
           {row.map((value, colIdx) => (
             <Dot key={colIdx} isActivated={value === 0} />
           ))}
+        </div>
+      );
+    });
+  }
+
+  render() {
+    /*const smallBoard = this.state.block.content.map((row, rowIdx) => {
+      return (
+        <div key={rowIdx}>
+          {row.map((value, colIdx) => (
+            <Dot key={colIdx} isActivated={value === 0} />
+          ))}
+        </div>
+      );
+    });*/
+    const smallBoard = this.state.blocks.map((block, blockIdx) => {
+      return (
+        <div key={blockIdx}>
+          {block.content.map((row, rowIdx) => (
+            <div key={rowIdx}>
+              {row.map((value, colIdx) => (
+                <Dot key={colIdx} isActivated={value === 0} />
+              ))}
+            </div>
+          ))}
+          <br />
         </div>
       );
     });
@@ -50,7 +91,7 @@ class RotateBlock extends React.Component {
         <div className="button-space">
           <button
             onClick={() => {
-              this.setState({ block: this.rotateBlock() });
+              this.setState({ block: this.rotateBlocks(this.state.blocks) });
             }}
           >
             Rotate block
