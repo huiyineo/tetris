@@ -17,7 +17,7 @@ class NextBlock extends React.Component {
       return (
         <div key={rowIdx}>
           {row.map((value, colIdx) => {
-            return <Dot key={colIdx} isActivated={value === 0} />;
+            return <Dot key={colIdx} isActivated={value !== 0} />;
           })}
         </div>
       );

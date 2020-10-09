@@ -13,9 +13,7 @@ class Board extends React.Component {
     this.state = {
       dots: dots,
       movingBlock: null,
-	  gameOver: false,
-	  /*movingBlock2: null,
-	  movingBlockPosition: [-1, 4]*/
+      gameOver: false      
     };
   }
 
@@ -83,19 +81,19 @@ class Board extends React.Component {
             let isActivated =
               this.state.movingBlock != null &&
               this.state.movingBlock.includes(rowIdx * 10 + colIdx)
-                ? 0
-                : value === 0;
+                ? value === 0
+                : 0;
             return <Dot key={colIdx} isActivated={isActivated} />;
           })}
         </div>
       );
     });
 
-    const status = this.state.gameOver ? "Game Over" : "";
+    const status = this.state.gameOver ? "Game Over" : "Running";
     return (
       <div>
         <div>{status}</div>
-        <div>{board}</div>        
+        <div>{board}</div>
       </div>
     );
   }

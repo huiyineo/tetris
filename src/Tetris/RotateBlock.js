@@ -37,18 +37,6 @@ class RotateBlock extends React.Component {
     return blocks;
   }
 
-  drawBlock(block) {
-    block.content.map((row, rowIdx) => {
-      return (
-        <div key={rowIdx}>
-          {row.map((value, colIdx) => (
-            <Dot key={colIdx} isActivated={value === 0} />
-          ))}
-        </div>
-      );
-    });
-  }
-
   render() {
     /*const smallBoard = this.state.block.content.map((row, rowIdx) => {
       return (
@@ -65,7 +53,7 @@ class RotateBlock extends React.Component {
           {block.content.map((row, rowIdx) => (
             <div key={rowIdx}>
               {row.map((value, colIdx) => (
-                <Dot key={colIdx} isActivated={value === 0} />
+                <Dot key={colIdx} isActivated={value !== 0} />
               ))}
             </div>
           ))}
