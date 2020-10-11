@@ -17,13 +17,15 @@ class Board2 extends React.Component {
       block: this.generateMatrixWithBlock(Block.simpleRandom()),
       position: [-3, 4],
       blockNo: 1,
+      intervalId: null
     };
   }
 
   componentDidMount() {
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       this.moveBlock();
     }, 500);
+    this.setState({intervalId: intervalId});
   }
 
   generateMatrixWithBlock(block) {
@@ -121,6 +123,7 @@ class Board2 extends React.Component {
 
   moveBlock() {
     if (this.isGameOver()) {
+      clearInterval(this.state.intervalId);
       return;
     }
 
