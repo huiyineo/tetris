@@ -10,6 +10,9 @@ class Board2 extends React.Component {
     var dots = new Array(20);
     for (var i = 0; i < dots.length; i++) {
       dots[i] = new Array(10).fill(0);
+      // if(i === 19){
+      //   dots[i] = [2,2,2,2,0,0,2,2,2,2]
+      // }
     }
 
     this.state = {
@@ -74,6 +77,19 @@ class Board2 extends React.Component {
     return [this.state.position[0] - 1, this.state.position[1]];
   }
 
+  getRepeatedRows(arr, repeats) {
+    var func = (arr, repeats) =>[...Array.from({ length: repeats }, () => arr)];
+    return func(arr, repeats);
+  }
+
+  clearFilledRow(){
+    const board = this.state.board;
+    var filtered = board.filter((row) => !row.every(cell => cell > 1))
+    var newRows = this.getRepeatedRows(new Array(10).fill(0), board.length - filtered.length);
+    filtered =  newRows.concat(filtered)
+    this.setState({board: filtered});
+  }
+
   drawMovingBlock() {
     return this.drawBlockInBoard(1);
   }
@@ -108,10 +124,9 @@ class Board2 extends React.Component {
     const len = block.length;
     const x = this.state.position[0];
     const y = this.state.position[1];
-
     for (let i = len - 1; i >= 0; i--) {
         for (let j = 0; j < len; j++) {
-         
+          
           if (i + x >= 0 && i + x < board.length && block[i][j] === 1 && board[i + x][j + y] > 1 ) {
             return true;
           }
@@ -128,16 +143,16 @@ class Board2 extends React.Component {
     }
 
     let newBoard = this.state.block;
-
     const isHitTheGround =
       this.state.position[0] + this.state.block.content.length >
       this.state.board.length;
-
+     
     if (isHitTheGround || this.hitNotMovingDot()) {
       this.setState({ position: this.getPreviousPosition() });
       newBoard = this.pinCurrentBlock();
       this.setState({ board: newBoard });
       this.createNewBlock();
+      this.clearFilledRow();
     } else {
       newBoard = this.drawMovingBlock();
       this.setState({ board: newBoard, position: this.getNextPosition() });
