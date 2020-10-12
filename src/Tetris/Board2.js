@@ -81,8 +81,8 @@ class Board2 extends React.Component {
             let isActivated =
               this.state.movingBlock != null &&
               this.state.movingBlock.includes(rowIdx * 10 + colIdx)
-                ? value === 0
-                : 0;
+                ? 1
+                : value === 1;
             return <Dot key={colIdx} isActivated={isActivated} />;
           })}
         </div>
