@@ -44,12 +44,20 @@ class Board2 extends React.Component {
     let gameOver = this.state.gameOver;
     if (this.shouldStop(movingBlock)) {
       this.state.movingBlock.forEach(
-        (x) => (dots[Math.floor(x / 10)][x % 10] = 1)
+        (x) => {
+          if (x >= 0) {
+            dots[Math.floor(x / 10)][x % 10] = 1
+          }
+        }
       );
       const newBlock = this.getNewBlock();
 
       if (this.shouldStop(newBlock)) {
         gameOver = true;
+        this.setState ({
+          gameOver: gameOver,
+        });
+        return;
       } else {
         movingBlock = newBlock;
       }
@@ -57,20 +65,20 @@ class Board2 extends React.Component {
 
     this.setState({
       dots: dots,
-      movingBlock: movingBlock,
-      gameOver: gameOver,
+      movingBlock: movingBlock
     });
   }
 
   shouldStop(movingBlock) {
     return (
       movingBlock.some((x) => x >= 200) ||
-      movingBlock.some((x) => this.state.dots[Math.floor(x / 10)][x % 10] === 1)
+      movingBlock.some((x) => x >= 0 && this.state.dots[Math.floor(x / 10)][x % 10] === 1)
     );
   }
 
   getNewBlock() {
-    return [2, 3, 12, 13];
+    //return [-8, -7, 2, 3];
+    return [-17,-7,2,3];
   }
 
   render() {
