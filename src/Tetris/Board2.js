@@ -78,7 +78,7 @@ class Board2 extends React.Component {
 
   getNewBlock() {
     //return [-8, -7, 2, 3];
-    return [-17,-7,2,3];
+    return [-17, -7, 2, 3];
   }
 
   render() {
@@ -97,7 +97,7 @@ class Board2 extends React.Component {
       );
     });
 
-    const status = this.state.gameOver ? "Game Over" : "Running";
+    const status = this.state.gameOver ? "Game Over" : "Welcome";
     return (
       <div>
         <div>{status}</div>

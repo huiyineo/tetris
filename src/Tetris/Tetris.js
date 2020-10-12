@@ -13,10 +13,11 @@ class Tetris extends React.Component {
       <>
         <div className="game-title">Welcome to Tetris.</div>
         <Board />
-        <Board2 />
         <Control />
         <NextBlock />
-        <RotateBlock />        
+        <RotateBlock />   
+        <br />
+        <Board2 />     
       </>
     );
   }
