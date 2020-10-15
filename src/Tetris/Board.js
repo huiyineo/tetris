@@ -171,9 +171,7 @@ class Board extends React.Component {
     });
 
     return (
-      <>
-        <div className="section-title">Next</div>
-
+      <>        
         {drawBoard}
       </>
     );
