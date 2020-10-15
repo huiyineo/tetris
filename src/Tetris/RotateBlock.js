@@ -31,22 +31,17 @@ class RotateBlock extends React.Component {
 
   rotateBlocks(blocks) {
     blocks.forEach((block) => {
-      block.content = utils.rotateMatrix(block.content);
+      if (block.name === "I" || block.name === "S" || block.name === "Z") {
+        block.content = utils.rotateMatrixSpecial(block.content);
+      } else {
+        block.content = utils.rotateMatrix(block.content);
+      }
     });
 
     return blocks;
   }
 
   render() {
-    /*const smallBoard = this.state.block.content.map((row, rowIdx) => {
-      return (
-        <div key={rowIdx}>
-          {row.map((value, colIdx) => (
-            <Dot key={colIdx} isActivated={value === 0} />
-          ))}
-        </div>
-      );
-    });*/
     const smallBoard = this.state.blocks.map((block, blockIdx) => {
       return (
         <div key={blockIdx}>

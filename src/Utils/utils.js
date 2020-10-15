@@ -18,15 +18,28 @@ const utils = {
     console.log(output);
   },
 
-  rotateMatrix: (matrix) => {
-    const rowLen = matrix.length;
-    const colLen = matrix[0].length;
+  rotateMatrix: (square) => {
+    const len = square.length;
     const rotatedMatrix = [];
 
-    for (let i = 0; i < rowLen; i++) {
+    for (let i = 0; i < len; i++) {
       rotatedMatrix[i] = [];
-      for (let j = 0; j < colLen; j++) {
-        rotatedMatrix[i][j] = matrix[colLen - j - 1][i];
+      for (let j = 0; j < len; j++) {
+        rotatedMatrix[i][j] = square[len - j - 1][i];
+      }
+    }
+
+    return rotatedMatrix;
+  },
+
+  rotateMatrixSpecial: (square) => {
+    const lastIdx = square.length - 1;
+    const rotatedMatrix = [];
+
+    for (let i = lastIdx; i >= 0; i--) {
+      rotatedMatrix[i] = [];
+      for (let j = lastIdx; j >= 0; j--) {
+        rotatedMatrix[i][j] = square[lastIdx - j][lastIdx - i];
       }
     }
 
