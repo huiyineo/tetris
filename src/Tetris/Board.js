@@ -17,7 +17,7 @@ class Board extends React.Component {
 
     this.state = {
       board: dots,
-      block: this.generateMatrixWithBlock(Block.simpleRandom()),
+      block: this.generateMatrixWithBlock(Block.new(this.props.movingBlock)),
       position: [-3, 4],
       blockNo: 1,
       intervalId: null
@@ -40,9 +40,11 @@ class Board extends React.Component {
   }
 
   createNewBlock() {
+    this.props.requestNewBlock();
+
     this.setState({
       position: [-3, 4],
-      block: this.generateMatrixWithBlock(Block.tgm3RandomNew()),
+      block: this.generateMatrixWithBlock(Block.new(this.props.movingBlock)),
     });
   }
 

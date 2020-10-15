@@ -82,6 +82,10 @@ const Block = {
   tgm3RandomNew: () => {
     return Block.new(tgm3Rand.next().value);
   },
+
+  tgm3Random: () => {
+    return tgm3Rand.next().value;
+  },
 };
 
 //NOTE: new game need to reset this variable
