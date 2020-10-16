@@ -13,7 +13,7 @@ class Tetris extends React.Component {
     super(props);
 
     this.state = {
-      currentBlock: Block.tgm3Random(),
+      currentBlock: Block.newTgm3Random(),
       nextBlock: Block.tgm3Random(),
     };
 
@@ -44,7 +44,7 @@ class Tetris extends React.Component {
             <SmallBoard blockName={this.state.nextBlock} />
           </div>
           <div className="game-control">
-            <Control />
+            <Control resetGame={this.props.resetGame} />
           </div>
         </div>
 

@@ -20,7 +20,7 @@ class Board extends React.Component {
       block: this.generateMatrixWithBlock(Block.new(this.props.movingBlock)),
       position: [-3, 4],
       blockNo: 1,
-      intervalId: null
+      intervalId: null,
     };
   }
 
@@ -28,7 +28,7 @@ class Board extends React.Component {
     const intervalId = setInterval(() => {
       this.moveBlock();
     }, 500);
-    this.setState({intervalId: intervalId});
+    this.setState({ intervalId: intervalId });
   }
 
   generateMatrixWithBlock(block) {
@@ -80,16 +80,21 @@ class Board extends React.Component {
   }
 
   getRepeatedRows(arr, repeats) {
-    var func = (arr, repeats) =>[...Array.from({ length: repeats }, () => arr)];
+    var func = (arr, repeats) => [
+      ...Array.from({ length: repeats }, () => arr),
+    ];
     return func(arr, repeats);
   }
 
-  clearFilledRow(){
+  clearFilledRow() {
     const board = this.state.board;
-    var filtered = board.filter((row) => !row.every(cell => cell > 1))
-    var newRows = this.getRepeatedRows(new Array(10).fill(0), board.length - filtered.length);
-    filtered =  newRows.concat(filtered)
-    this.setState({board: filtered});
+    var filtered = board.filter((row) => !row.every((cell) => cell > 1));
+    var newRows = this.getRepeatedRows(
+      new Array(10).fill(0),
+      board.length - filtered.length
+    );
+    filtered = newRows.concat(filtered);
+    this.setState({ board: filtered });
   }
 
   drawMovingBlock() {
@@ -127,14 +132,18 @@ class Board extends React.Component {
     const x = this.state.position[0];
     const y = this.state.position[1];
     for (let i = len - 1; i >= 0; i--) {
-        for (let j = 0; j < len; j++) {
-          
-          if (i + x >= 0 && i + x < board.length && block[i][j] === 1 && board[i + x][j + y] > 1 ) {
-            return true;
-          }
+      for (let j = 0; j < len; j++) {
+        if (
+          i + x >= 0 &&
+          i + x < board.length &&
+          block[i][j] === 1 &&
+          board[i + x][j + y] > 1
+        ) {
+          return true;
         }
       }
-    
+    }
+
     return false;
   }
 
@@ -148,7 +157,7 @@ class Board extends React.Component {
     const isHitTheGround =
       this.state.position[0] + this.state.block.content.length >
       this.state.board.length;
-     
+
     if (isHitTheGround || this.hitNotMovingDot()) {
       this.setState({ position: this.getPreviousPosition() });
       newBoard = this.pinCurrentBlock();
@@ -172,11 +181,7 @@ class Board extends React.Component {
       );
     });
 
-    return (
-      <>        
-        {drawBoard}
-      </>
-    );
+    return <>{drawBoard}</>;
   }
 }
 

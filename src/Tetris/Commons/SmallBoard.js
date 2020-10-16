@@ -10,7 +10,7 @@ class SmallBoard extends React.Component {
       2,
       4
     );
-    
+
     const smallBoard = block.map((row, rowIdx) => {
       return (
         <div key={rowIdx}>

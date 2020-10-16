@@ -10,7 +10,7 @@ class Control extends React.Component {
         <button onClick={() => {}}>Drop</button>
         <button onClick={() => {}}>Rotate</button>
         <button onClick={() => {}}>Play Pause</button>
-        <button onClick={() => {}}>Reset</button>
+        <button onClick={this.props.resetGame}>Reset</button>
       </>
     );
   }

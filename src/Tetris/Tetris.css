@@ -78,15 +78,15 @@
 
 .game-control button {
   width: 56px;
-    height: 56px;
-    margin-left: 6px;
-    word-break: break-word;
-    box-sizing: border-box;
-    vertical-align: bottom;
-    /* border-radius: 50%; */
-    font-weight: bold;
-    /* color: white; */
-    /* background-color: #879372; */
-    text-transform: uppercase;
-    font-size: 10px;
+  height: 56px;
+  margin-left: 6px;
+  word-break: break-word;
+  box-sizing: border-box;
+  vertical-align: bottom;
+  /* border-radius: 50%; */
+  font-weight: bold;
+  /* color: white; */
+  /* background-color: #879372; */
+  text-transform: uppercase;
+  font-size: 10px;
 }
