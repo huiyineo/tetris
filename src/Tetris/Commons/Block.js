@@ -68,6 +68,15 @@ const Block = {
     return { name: letter, content: Block.blocks[letter] };
   },
 
+  newSquare: (letter) => {
+    const block = Block.new(letter);
+    const len = Math.max(block.content.length, block.content[0].length);
+
+    block.content = utils.blockToMatrix(block.content, len, len);
+
+    return block;
+  },
+
   next: (letter) => {
     return { name: letter, content: Block.blocksForNext[letter] };
   },

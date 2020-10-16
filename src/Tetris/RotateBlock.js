@@ -8,25 +8,16 @@ class RotateBlock extends React.Component {
     super(props);
 
     this.state = {
-      block: this.generateMatrixWithBlock(Block.tgm3RandomNext()),
       blocks: [
-        this.generateMatrixWithBlock(Block.new("I")),
-        this.generateMatrixWithBlock(Block.new("J")),
-        this.generateMatrixWithBlock(Block.new("L")),
-        this.generateMatrixWithBlock(Block.new("O")),
-        this.generateMatrixWithBlock(Block.new("S")),
-        this.generateMatrixWithBlock(Block.new("T")),
-        this.generateMatrixWithBlock(Block.new("Z")),
+        Block.newSquare("I"),
+        Block.newSquare("J"),
+        Block.newSquare("L"),
+        Block.newSquare("O"),
+        Block.newSquare("S"),
+        Block.newSquare("T"),
+        Block.newSquare("Z"),
       ],
     };
-  }
-
-  generateMatrixWithBlock(block) {
-    const len = Math.max(block.content.length, block.content[0].length);
-
-    block.content = utils.blockToMatrix(block.content, len, len);
-
-    return block;
   }
 
   rotateBlocks(blocks) {

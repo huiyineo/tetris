@@ -1,82 +1,69 @@
 import React from "react";
 import Dot from "./Commons/Dot";
 import Block from "./Commons/Block";
-import utils from "../Utils/utils";
 
 class Board extends React.Component {
   constructor(props) {
     super(props);
 
-    var dots = new Array(20);
-    for (var i = 0; i < dots.length; i++) {
-      dots[i] = new Array(10).fill(0);
-      // if(i === 19){
-      //   dots[i] = [2,2,2,2,0,0,2,2,2,2]
-      // }
-    }
+    this.boardRowCount = 20;
+    this.boardColCount = 10;
 
     this.state = {
-      board: dots,
-      block: this.generateMatrixWithBlock(Block.new(this.props.movingBlock)),
-      position: [-3, 4],
+      board: this.initEmptyBoard(),
+      block: Block.newSquare(this.props.movingBlock),
+      blockX: -3,
+      blockY: 4,
       blockNo: 1,
       intervalId: null,
+      speed: 100,
     };
+  }
+
+  initEmptyBoard() {
+    const dots = new Array(this.boardRowCount);
+    for (var i = 0; i < dots.length; i++) {
+      dots[i] = new Array(this.boardColCount).fill(0);
+    }
+    return dots;
   }
 
   componentDidMount() {
     const intervalId = setInterval(() => {
       this.moveBlock();
-    }, 500);
+    }, this.state.speed);
     this.setState({ intervalId: intervalId });
-  }
-
-  generateMatrixWithBlock(block) {
-    const len = Math.max(block.content.length, block.content[0].length);
-
-    block.content = utils.blockToMatrix(block.content, len, len);
-
-    return block;
   }
 
   createNewBlock() {
     this.props.requestNewBlock();
 
     this.setState({
-      position: [-3, 4],
-      block: this.generateMatrixWithBlock(Block.new(this.props.movingBlock)),
+      blockX: -3,
+      blockY: 4,
+      block: Block.newSquare(this.props.movingBlock),
     });
   }
 
-  isGameOver() {
-    const board = this.state.board;
-    const len = board[0].length;
-    for (let i = 0; i < len; i++) {
-      if (board[0][i] > 1) {
-        return true;
-      }
-    }
-
-    return false;
+  isFirstRowHaveDot() {
+    return this.state.board[0].some((v) => v > 1);
   }
 
   pinCurrentBlock() {
-    this.setState({ blockNo: this.state.blockNo + 1 });
-    return this.drawBlockInBoard(this.state.blockNo);
+    this.setState({
+      blockNo: this.state.blockNo + 1,
+      blockX: this.getPreviousRowIndex(),
+    });
+    const newBoard = this.drawBlockInBoard(this.state.blockNo);
+    this.setState({ board: newBoard });
   }
 
-  getNextPosition() {
-    if (this.state.position[0] + 1 === this.state.board.length) {
-      return this.state.position;
-    }
-    return [this.state.position[0] + 1, this.state.position[1]];
+  getNextRowIndex() {
+    return this.state.blockX + 1;
   }
 
-  getPreviousPosition() {
-    if (this.state.position[0] - 1 < 0) {
-      return this.state.position;
-    }
-    return [this.state.position[0] - 1, this.state.position[1]];
+  getPreviousRowIndex() {
+    return this.state.blockX - 1;
   }
 
   getRepeatedRows(arr, repeats) {
@@ -88,36 +75,62 @@ class Board extends React.Component {
 
   clearFilledRow() {
     const board = this.state.board;
+
     var filtered = board.filter((row) => !row.every((cell) => cell > 1));
     var newRows = this.getRepeatedRows(
-      new Array(10).fill(0),
+      new Array(this.boardColCount).fill(0),
       board.length - filtered.length
     );
-    filtered = newRows.concat(filtered);
-    this.setState({ board: filtered });
+
+    this.setState({ board: newRows.concat(filtered) });
   }
 
   drawMovingBlock() {
-    return this.drawBlockInBoard(1);
+    const newBoard = this.clearAndDrawBlockInNextRow(1);
+    this.setState({ board: newBoard, blockX: this.getNextRowIndex() });
+  }
+
+  clearAndDrawBlockInNextRow(value) {
+    const board = this.state.board;
+    const block = this.state.block.content;
+    const len = block.length;
+    const x = this.state.blockX;
+    const y = this.state.blockY;
+
+    for (let i = len - 1; i >= 0; i--) {
+      for (let j = 0; j < len; j++) {
+        //Clear old block
+        if (i + x - 1 >= 0 && j + y >= 0 && board[i + x - 1][j + y] === 1) {
+          board[i + x - 1][j + y] = 0;
+        }
+        //Draw new block
+        if (
+          i + x >= 0 &&
+          j + y >= 0 &&
+          i + x < board.length &&
+          block[i][j] === 1
+        ) {
+          board[i + x][j + y] = value;
+        }
+      }
+    }
+
+    return board;
   }
 
   drawBlockInBoard(value) {
     const board = this.state.board;
     const block = this.state.block.content;
-
     const len = block.length;
-    const x = this.state.position[0];
-    const y = this.state.position[1];
+    const startX = Math.max(this.state.blockX, 0);
+    const startY = Math.max(this.state.blockY, 0);
+    const endX = Math.min(this.state.blockX + len, board.length);
+    const endY = Math.min(this.state.blockY + len, board[0].length);
 
-    for (let i = len - 1; i >= 0; i--) {
-      for (let j = 0; j < len; j++) {
-        //Clear old block
-        if (i + x - 1 >= 0 && board[i + x - 1][j + y] === 1) {
-          board[i + x - 1][j + y] = 0;
-        }
-        //Draw new block
-        if (i + x >= 0 && i + x < board.length && block[i][j] === 1) {
-          board[i + x][j + y] = value;
+    for (let i = startX; i < endX; i++) {
+      for (let j = startY; j < endY; j++) {
+        if (board[i][j] === 1) {
+          board[i][j] = value;
         }
       }
     }
@@ -129,16 +142,14 @@ class Board extends React.Component {
     const board = this.state.board;
     const block = this.state.block.content;
     const len = block.length;
-    const x = this.state.position[0];
-    const y = this.state.position[1];
-    for (let i = len - 1; i >= 0; i--) {
-      for (let j = 0; j < len; j++) {
-        if (
-          i + x >= 0 &&
-          i + x < board.length &&
-          block[i][j] === 1 &&
-          board[i + x][j + y] > 1
-        ) {
+    const startX = Math.max(this.state.blockX, 0);
+    const startY = Math.max(this.state.blockY, 0);
+    const endX = Math.min(this.state.blockX + len, board.length - 1);
+    const endY = Math.min(this.state.blockY + len, board[0].length);
+
+    for (let i = startX; i < endX; i++) {
+      for (let j = startY; j < endY; j++) {
+        if (board[i][j] === 1 && board[i + 1][j] > 1) {
           return true;
         }
       }
@@ -147,26 +158,26 @@ class Board extends React.Component {
     return false;
   }
 
+  hitTheGround() {
+    return (
+      this.state.blockX + this.state.block.content.length >
+      this.state.board.length
+    );
+  }
+
   moveBlock() {
-    if (this.isGameOver()) {
+    const isGameOver = this.isFirstRowHaveDot();
+    if (isGameOver) {
       clearInterval(this.state.intervalId);
       return;
     }
 
-    let newBoard = this.state.block;
-    const isHitTheGround =
-      this.state.position[0] + this.state.block.content.length >
-      this.state.board.length;
-
-    if (isHitTheGround || this.hitNotMovingDot()) {
-      this.setState({ position: this.getPreviousPosition() });
-      newBoard = this.pinCurrentBlock();
-      this.setState({ board: newBoard });
-      this.createNewBlock();
+    if (this.hitTheGround() || this.hitNotMovingDot()) {
+      this.pinCurrentBlock();
       this.clearFilledRow();
+      this.createNewBlock();
     } else {
-      newBoard = this.drawMovingBlock();
-      this.setState({ board: newBoard, position: this.getNextPosition() });
+      this.drawMovingBlock();
     }
   }
 
