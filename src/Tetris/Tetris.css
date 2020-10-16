@@ -9,8 +9,8 @@
 .section-title {
   text-transform: uppercase;
   font-size: large;
-  color: black;
   margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .dot {
@@ -38,14 +38,15 @@
   position: absolute;
   margin-left: -16px;
   margin-top: 4px;
+  font-family: sans-serif;
 }
 
 .filled {
-  border-color: black;
+  border-color: #333;
 }
 
 .filled:after {
-  background-color: #000;
+  background-color: #333;
 }
 
 .button-space {
@@ -58,27 +59,50 @@
 }
 
 /*game-board*/
-.main-board {
+.game-main {
+  display: inline-block;
+  vertical-align: top;
+  width: 380px;
+}
+
+.game-board {
   width: 240px;
   display: inline-block;
+  vertical-align: top;
 }
 
 .game-information {
   width: 140px;
+  height: 440px;
   display: inline-block;
   vertical-align: top;
+  box-shadow: 2px 2px 1px #888888;
 }
 
 .game-content {
   border: 5px solid #879372;
   padding: 10px;
   margin-bottom: 20px;
-  width: 380px;
+  width: 430px;
+  vertical-align: top;
+  display: inline-block;
+  font-family: "Orbitron", sans-serif;
+  box-shadow: 10px 10px 6px #888888;
+}
+
+.game-history {
+  width: 500px;
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 20px;
 }
 
 .game-control {
-  margin-top: 10px;
+  margin-top: 25px;
   text-align: center;
+  width: 100%;
+  display: inline-block;
+  vertical-align: top;
 }
 
 .game-control button {
@@ -89,15 +113,29 @@
   word-break: break-word;
   box-sizing: border-box;
   vertical-align: bottom;
-  /* border-radius: 50%; */
+  border-radius: 50%;
   font-weight: bold;
   /* color: white; */
   /* background-color: #879372; */
   text-transform: uppercase;
   font-size: 10px;
+  box-shadow: 2px 2px 1px #888888;
 }
 
 .section-content {
   min-height: 60px;
   vertical-align: top;
+}
+
+.game-decoration {
+  width: 50px;
+  display: inline-block;
+}
+
+.decorate-block .dot {
+  box-shadow: 2px 2px 1px #888888;
+}
+
+.decorate-block {
+  margin-bottom: 20px;
 }
