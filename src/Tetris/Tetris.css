@@ -52,14 +52,19 @@
   margin-top: 10px;
 }
 
+.rotate-block {
+  width: 100px;
+  display: inline-block;
+}
+
 /*game-board*/
 .main-board {
   width: 240px;
   display: inline-block;
 }
 
-.next-board {
-  width: 200px;
+.game-information {
+  width: 140px;
   display: inline-block;
   vertical-align: top;
 }
@@ -68,7 +73,7 @@
   border: 5px solid #879372;
   padding: 10px;
   margin-bottom: 20px;
-  width: 440px;
+  width: 380px;
 }
 
 .game-control {
@@ -80,6 +85,7 @@
   width: 56px;
   height: 56px;
   margin-left: 6px;
+  margin-bottom: 6px;
   word-break: break-word;
   box-sizing: border-box;
   vertical-align: bottom;
@@ -89,4 +95,9 @@
   /* background-color: #879372; */
   text-transform: uppercase;
   font-size: 10px;
+}
+
+.section-content {
+  min-height: 60px;
+  vertical-align: top;
 }

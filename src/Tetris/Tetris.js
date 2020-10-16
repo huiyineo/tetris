@@ -40,8 +40,17 @@ class Tetris extends React.Component {
               requestNewBlock={this.newBlockHandler}
             />
           </div>
-          <div className="next-board">
-            <SmallBoard blockName={this.state.nextBlock} />
+          <div className="game-information">
+            <div className="section-title">Score</div>
+            <div className="section-content"></div>
+            <div className="section-title">Level</div>
+            <div className="section-content"></div>
+            <div className="section-title">Next</div>
+            <div className="section-content">
+            <SmallBoard blockName={this.state.nextBlock}/>
+            </div>
+            <div className="section-title">Status</div>
+            <div className="section-content"></div>
           </div>
           <div className="game-control">
             <Control resetGame={this.props.resetGame} />

@@ -21,13 +21,7 @@ class SmallBoard extends React.Component {
       );
     });
 
-    return (
-      <>
-        <div className="section-title">Next</div>
-
-        {smallBoard}
-      </>
-    );
+    return <>{smallBoard}</>;
   }
 }
 

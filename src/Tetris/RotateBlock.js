@@ -44,7 +44,7 @@ class RotateBlock extends React.Component {
   render() {
     const smallBoard = this.state.blocks.map((block, blockIdx) => {
       return (
-        <div key={blockIdx}>
+        <div key={blockIdx} className="rotate-block">
           {block.content.map((row, rowIdx) => (
             <div key={rowIdx}>
               {row.map((value, colIdx) => (
