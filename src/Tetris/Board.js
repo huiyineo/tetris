@@ -1,6 +1,7 @@
 import React from "react";
 import Dot from "./Commons/Dot";
 import Block from "./Commons/Block";
+import utils from "../Utils/utils";
 
 class Board extends React.Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class Board extends React.Component {
       blockY: 4,
       blockNo: 1,
       intervalId: null,
-      speed: 100,
+      speed: 500,
     };
   }
 
@@ -179,6 +180,20 @@ class Board extends React.Component {
     } else {
       this.drawMovingBlock();
     }
+  }
+
+  rotateBlock(){
+    //problem need to instance update
+    //block might still in behind screen
+    const block = this.state.block;
+
+    if (block.name === "I" || block.name === "S" || block.name === "Z") {
+      block.content = utils.rotateMatrixSpecial(block.content);
+    } else {
+      block.content = utils.rotateMatrix(block.content);
+    }
+
+    this.setState({block: block});
   }
 
   render() {

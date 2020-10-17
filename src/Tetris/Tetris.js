@@ -18,7 +18,12 @@ class Tetris extends React.Component {
       nextBlock: Block.tgm3Random(),
     };
 
+    //To bind event from child
     this.newBlockHandler = this.newBlockHandler.bind(this);
+    this.rotateBlockHandler = this.rotateBlockHandler.bind(this);
+
+    //To create Refs with child
+    this.board = React.createRef();
   }
 
   newBlockHandler() {
@@ -27,6 +32,11 @@ class Tetris extends React.Component {
     this.setState({ currentBlock: block, nextBlock: Block.tgm3Random() });
 
     return block;
+  }
+
+  rotateBlockHandler() {
+    console.log("trigger handler");
+    this.board.current.rotateBlock();
   }
 
   render() {
@@ -40,6 +50,7 @@ class Tetris extends React.Component {
           <div className="game-main">
             <div className="game-board">
               <Board
+                ref={this.board}
                 movingBlock={this.state.currentBlock}
                 requestNewBlock={this.newBlockHandler}
               />
@@ -57,7 +68,10 @@ class Tetris extends React.Component {
               <div className="section-content">work in progress</div>
             </div>
             <div className="game-control">
-              <Control resetGame={this.props.resetGame} />
+              <Control
+                resetGame={this.props.resetGame}
+                rotateBlock={this.rotateBlockHandler}
+              />
             </div>
           </div>
         </div>

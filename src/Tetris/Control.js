@@ -6,7 +6,7 @@ class Control extends React.Component {
       <>
         <button onClick={() => {}}>Left</button>
         <button onClick={() => {}}>Right</button>
-        <button onClick={() => {}}>Rotate</button>
+        <button onClick={this.props.rotateBlock}>Rotate</button>
         <button onClick={() => {}}>Down</button>
         <button onClick={() => {}}>Drop</button>
         <br/>
