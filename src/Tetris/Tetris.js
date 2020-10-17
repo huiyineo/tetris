@@ -34,8 +34,7 @@ class Tetris extends React.Component {
     return block;
   }
 
-  rotateBlockHandler() {
-    console.log("trigger handler");
+  rotateBlockHandler() {    
     this.board.current.rotateBlock();
   }
 
