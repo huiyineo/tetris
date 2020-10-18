@@ -133,6 +133,7 @@ class Board extends React.Component {
   }
 
   stillCanMoveDown() {
+    //have bug when Rotate L or T to ground
     return (
       this.state.blockX + this.state.block.content.length <
       this.state.board.length
