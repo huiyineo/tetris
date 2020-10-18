@@ -156,6 +156,22 @@ class Board extends React.Component {
     }
   }
 
+  getSum(total, num) {
+    return total + Math.round(num);
+  }
+
+  moveBlockY(i){
+    const content = this.state.block.content;
+    const movedY =this.state.blockY  + i;
+    const getSum = (accumulator, currentValue) => accumulator + currentValue;
+
+    const offset = Math.max.apply(null, content.map(function(row){ return row.reduce(getSum); }));
+    const boundary = this.boardColCount - offset;
+    if (movedY >= 0 && movedY <= boundary){
+      this.setState({blockY : this.state.blockY + i});
+    }
+  }
+
   rotateBlock() {
     const block = this.state.block;
 
