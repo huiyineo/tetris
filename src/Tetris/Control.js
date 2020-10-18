@@ -4,8 +4,8 @@ class Control extends React.Component {
   render() {
     return (
       <>
-        <button onClick={() => {}}>Left</button>
-        <button onClick={() => {}}>Right</button>
+        <button onClick={this.props.moveLeft}>Left</button>
+        <button onClick={this.props.moveRight}>Right</button>
         <button onClick={this.props.rotateBlock}>Rotate</button>
         <button onClick={() => {}}>Down</button>
         <button onClick={() => {}}>Drop</button>

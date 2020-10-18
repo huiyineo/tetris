@@ -38,6 +38,10 @@ class Tetris extends React.Component {
     this.board.current.rotateBlock();
   }
 
+  moveBlockHandler(i){
+    this.board.current.moveBlockY(i);
+  }  
+
   render() {
     return (
       <>
@@ -70,6 +74,8 @@ class Tetris extends React.Component {
               <Control
                 resetGame={this.props.resetGame}
                 rotateBlock={this.rotateBlockHandler}
+                moveLeft={() => this.moveBlockHandler(-1)}
+                moveRight={() => this.moveBlockHandler(1)}
               />
             </div>
           </div>
