@@ -18,6 +18,7 @@ class Board extends React.Component {
       blockNo: 1,
       intervalId: null,
       speed: 400,
+      inDrop: false
     };
   }
 
@@ -132,14 +133,17 @@ class Board extends React.Component {
     return false;
   }
 
-  stillCanMoveDown() {
+  stillCanMoveDown(extraX = 0) {
     return (
-      this.state.blockX + this.state.block.content.length <
+      this.state.blockX + this.state.block.content.length + extraX <
       this.state.board.length
     );
   }
 
   moveBlock() {
+    if (this.state.inDrop){
+      return;
+    }
     const isGameOver = this.isFirstRowHaveDot();
     if (isGameOver) {
       clearInterval(this.state.intervalId);
@@ -161,6 +165,9 @@ class Board extends React.Component {
   }
 
   moveBlockY(i){
+    if (this.state.inDrop){
+      return;
+    }
     const content = this.state.block.content;
     const movedY =this.state.blockY  + i;
     const getSum = (accumulator, currentValue) => accumulator + currentValue;
@@ -173,6 +180,9 @@ class Board extends React.Component {
   }
 
   rotateBlock() {
+    if (this.state.inDrop){
+      return;
+    }
     const block = this.state.block;
 
     if (block.name === "I" || block.name === "S" || block.name === "Z") {
@@ -198,17 +208,23 @@ class Board extends React.Component {
     return x >= 0 && x < len && y >= 0 && x < len && block[x][y] === 1;
   }
 
-  async drop() {
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
+  drop() {
+    if (this.state.inDrop){
+      return;
     }
 
-    while (this.moveBlock()) {
-      await sleep(50);
+    this.setState({ inDrop: true });
+
+    let count = 0;
+    while (this.stillCanMoveDown(count) && !this.hitNotMovingDot(count + 1, 0)) {
+      count++;
     }
+
+    this.setState({ 
+      blockX: this.state.blockX + count,
+      inDrop: false
+    });
   }
-
-
 
   render() {
     const drawBoard = this.state.board.map((row, rowIdx) => {
