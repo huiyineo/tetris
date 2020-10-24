@@ -143,16 +143,17 @@ class Board extends React.Component {
     const isGameOver = this.isFirstRowHaveDot();
     if (isGameOver) {
       clearInterval(this.state.intervalId);
-      return;
+      return false;
     }
 
     if (!this.stillCanMoveDown() || this.hitNotMovingDot(1, 0)) {
       this.pinCurrentBlock();
       this.clearFilledRow();
       this.createNewBlock();
-    } else if (this.stillCanMoveDown()) {
-      this.setState({ blockX: this.getNextRowIndex() });
-    }
+      return false;
+    } 
+    this.setState({ blockX: this.getNextRowIndex() });
+    return true;
   }
 
   getSum(total, num) {
@@ -196,6 +197,18 @@ class Board extends React.Component {
 
     return x >= 0 && x < len && y >= 0 && x < len && block[x][y] === 1;
   }
+
+  async drop() {
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+
+    while (this.moveBlock()) {
+      await sleep(50);
+    }
+  }
+
+
 
   render() {
     const drawBoard = this.state.board.map((row, rowIdx) => {

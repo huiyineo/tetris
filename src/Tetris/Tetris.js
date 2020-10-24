@@ -21,6 +21,7 @@ class Tetris extends React.Component {
     //To bind event from child
     this.newBlockHandler = this.newBlockHandler.bind(this);
     this.rotateBlockHandler = this.rotateBlockHandler.bind(this);
+    this.drop = this.drop.bind(this);
 
     //To create Refs with child
     this.board = React.createRef();
@@ -41,6 +42,10 @@ class Tetris extends React.Component {
   moveBlockHandler(i){
     this.board.current.moveBlockY(i);
   }  
+
+  drop(){
+    this.board.current.drop();
+  }
 
   render() {
     return (
@@ -76,6 +81,7 @@ class Tetris extends React.Component {
                 rotateBlock={this.rotateBlockHandler}
                 moveLeft={() => this.moveBlockHandler(-1)}
                 moveRight={() => this.moveBlockHandler(1)}
+                drop={this.drop}
               />
             </div>
           </div>
