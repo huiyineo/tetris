@@ -17,7 +17,12 @@ class Board extends React.Component {
       blockY: 4,
       blockNo: 1,
       intervalId: null,
+<<<<<<< HEAD
       speed: 700,
+=======
+      speed: 400,
+      inDrop: false
+>>>>>>> 93b7485aac36b2e54c0cef0cff9ad809786b0a34
     };
   }
 
@@ -132,14 +137,17 @@ class Board extends React.Component {
     return false;
   }
 
-  stillCanMoveDown() {
+  stillCanMoveDown(extraX = 0) {
     return (
-      this.state.blockX + this.state.block.content.length <
+      this.state.blockX + this.state.block.content.length + extraX <
       this.state.board.length
     );
   }
 
   moveBlock() {
+    if (this.state.inDrop){
+      return;
+    }
     const isGameOver = this.isFirstRowHaveDot();
     if (isGameOver) {
       clearInterval(this.state.intervalId);
@@ -161,6 +169,9 @@ class Board extends React.Component {
   }
 
   moveBlockY(i){
+    if (this.state.inDrop){
+      return;
+    }
     const content = this.state.block.content;
     const finalY = this.state.blockY + i;
     if (this.AbleToMoveY(finalY, content) && !this.hitNotMovingDot(0, i)){
@@ -179,6 +190,9 @@ class Board extends React.Component {
   }
 
   rotateBlock() {
+    if (this.state.inDrop){
+      return;
+    }
     const block = this.state.block;
     var rotatedBlock;   
     if (block.name === "I" || block.name === "S" || block.name === "Z") {
@@ -207,18 +221,23 @@ class Board extends React.Component {
     return x >= 0 && x < len && y >= 0 && x < len && block[x][y] === 1;
   }
 
-  async drop() {
-    const current = this.props.movingBlock;
-    const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
+  drop() {
+    if (this.state.inDrop){
+      return;
     }
 
-    while (this.moveBlock() && current === this.props.movingBlock) {
-      await sleep(50);
+    this.setState({ inDrop: true });
+
+    let count = 0;
+    while (this.stillCanMoveDown(count) && !this.hitNotMovingDot(count + 1, 0)) {
+      count++;
     }
+
+    this.setState({ 
+      blockX: this.state.blockX + count,
+      inDrop: false
+    });
   }
-
-
 
   render() {
     const drawBoard = this.state.board.map((row, rowIdx) => {
