@@ -17,7 +17,7 @@ class Board extends React.Component {
       blockY: 4,
       blockNo: 1,
       intervalId: null,
-      speed: 400,
+      speed: 700,
     };
   }
 
@@ -162,26 +162,35 @@ class Board extends React.Component {
 
   moveBlockY(i){
     const content = this.state.block.content;
-    const movedY =this.state.blockY  + i;
-    const getSum = (accumulator, currentValue) => accumulator + currentValue;
-
-    const offset = Math.max.apply(null, content.map(function(row){ return row.reduce(getSum); }));
-    const boundary = this.boardColCount - offset;
-    if (movedY >= 0 && movedY <= boundary && !this.hitNotMovingDot(0, i)){
-      this.setState({blockY : this.state.blockY + i});
+    const finalY = this.state.blockY + i;
+    if (this.AbleToMoveY(finalY, content) && !this.hitNotMovingDot(0, i)){
+      this.setState({blockY : finalY});
     }
+  }
+
+  AbleToMoveY(blockY, content){
+    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1] 
+    let sumsOfBlock = content[0].map(
+      (x, idx) => content.reduce((sum, curr) => sum + curr[idx], 0)
+    ).map((x) => x > 0 ? 1 : 0);
+
+    var rightEdge = blockY + sumsOfBlock.lastIndexOf(1);;
+    return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
   rotateBlock() {
     const block = this.state.block;
-
+    var rotatedBlock;   
     if (block.name === "I" || block.name === "S" || block.name === "Z") {
-      block.content = utils.rotateMatrixSpecial(block.content);
+      rotatedBlock = utils.rotateMatrixSpecial(block.content);
     } else {
-      block.content = utils.rotateMatrix(block.content);
+      rotatedBlock = utils.rotateMatrix(block.content);
     }
-
-    this.setState({ block: block });
+    
+    if (this.AbleToMoveY(this.state.blockY, rotatedBlock)){
+      block.content = rotatedBlock;
+      this.setState({ block: block });
+    }
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
