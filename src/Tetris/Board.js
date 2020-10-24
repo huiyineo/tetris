@@ -17,12 +17,8 @@ class Board extends React.Component {
       blockY: 4,
       blockNo: 1,
       intervalId: null,
-<<<<<<< HEAD
-      speed: 700,
-=======
       speed: 400,
       inDrop: false
->>>>>>> 93b7485aac36b2e54c0cef0cff9ad809786b0a34
     };
   }
 
