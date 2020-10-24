@@ -199,11 +199,12 @@ class Board extends React.Component {
   }
 
   async drop() {
+    const current = this.props.movingBlock;
     const sleep = (milliseconds) => {
       return new Promise(resolve => setTimeout(resolve, milliseconds))
     }
 
-    while (this.moveBlock()) {
+    while (this.moveBlock() && current === this.props.movingBlock) {
       await sleep(50);
     }
   }
