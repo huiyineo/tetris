@@ -17,7 +17,7 @@ class Board extends React.Component {
       blockY: 4,
       blockNo: 1,
       intervalId: null,
-      speed: 100,
+      speed: 400,
     };
   }
 
@@ -108,12 +108,12 @@ class Board extends React.Component {
     return board;
   }
 
-  hitNotMovingDot() {
+  hitNotMovingDot(moveX = 0, moveY = 0) {
     const board = this.state.board;
     const block = this.state.block.content;
     const len = block.length;
-    const x = this.state.blockX;
-    const y = this.state.blockY;
+    const x = this.state.blockX + moveX;
+    const y = this.state.blockY + moveY;
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
@@ -122,7 +122,7 @@ class Board extends React.Component {
           j + y >= 0 &&
           i + x < board.length &&
           block[i][j] === 1 &&
-          board[i + x + 1][j + y] > 1
+          board[i + x][j + y] > 1
         ) {
           return true;
         }
@@ -146,7 +146,7 @@ class Board extends React.Component {
       return;
     }
 
-    if (!this.stillCanMoveDown() || this.hitNotMovingDot()) {
+    if (!this.stillCanMoveDown() || this.hitNotMovingDot(1, 0)) {
       this.pinCurrentBlock();
       this.clearFilledRow();
       this.createNewBlock();
@@ -166,7 +166,7 @@ class Board extends React.Component {
 
     const offset = Math.max.apply(null, content.map(function(row){ return row.reduce(getSum); }));
     const boundary = this.boardColCount - offset;
-    if (movedY >= 0 && movedY <= boundary){
+    if (movedY >= 0 && movedY <= boundary && !this.hitNotMovingDot(0, i)){
       this.setState({blockY : this.state.blockY + i});
     }
   }
