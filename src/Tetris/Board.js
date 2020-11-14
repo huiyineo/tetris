@@ -38,6 +38,10 @@ class Board extends React.Component {
     this.setState({ intervalId: intervalId });
   }
 
+  componentWillUnmount(){
+    clearInterval(this.state.intervalId);
+  }
+
   createNewBlock() {
     this.props.requestNewBlock();
 
