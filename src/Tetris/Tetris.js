@@ -74,6 +74,10 @@ class Tetris extends React.Component {
     document.addEventListener("keydown", this.handleKeyDown, false);
   }
 
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.handleKeyDown, false);
+  }
+
   render() {
     return (
       <>
@@ -120,8 +124,6 @@ class Tetris extends React.Component {
         <NextBlock />
         <br />
         <RotateBlock />
-        <br />
-        <Board2 />
       </>
     );
   }
