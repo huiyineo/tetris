@@ -1,6 +1,7 @@
 import React from "react";
 import Dot from "./Commons/Dot";
 import Block from "./Commons/Block";
+import Score from "./Commons/Score";
 import utils from "../Utils/utils";
 
 class Board extends React.Component {
@@ -20,6 +21,7 @@ class Board extends React.Component {
       intervalId: null,
       speed: 400,
       inDrop: false,
+      clearedLines: 0,
     };
   }
 
@@ -38,7 +40,7 @@ class Board extends React.Component {
     this.setState({ intervalId: intervalId });
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     clearInterval(this.state.intervalId);
   }
 
@@ -58,7 +60,7 @@ class Board extends React.Component {
 
   pinCurrentBlock() {
     this.setState({
-      blockNo: this.state.blockNo + 1
+      blockNo: this.state.blockNo + 1,
     });
     const newBoard = this.drawBlockInBoard(this.state.blockNo);
     this.setState({ board: newBoard });
@@ -88,7 +90,19 @@ class Board extends React.Component {
       board.length - filtered.length
     );
 
+    const filledRowCount = this.boardRowCount - filtered.length;
+    this.props.updateScores(this.calculateScores(filledRowCount));
+
     this.setState({ board: newRows.concat(filtered) });
+  }
+
+  calculateScores(line) {
+    const cleared = this.state.clearedLines + line;
+    //Try fixed level first with 10 rows first
+    const level = parseInt(cleared / 10);
+
+    this.setState({ clearedLines: cleared });
+    return Score.linePoints(level, line);
   }
 
   drawBlockInBoard(value) {
@@ -146,7 +160,7 @@ class Board extends React.Component {
   }
 
   moveBlock() {
-    if (this.state.inDrop){
+    if (this.state.inDrop) {
       return;
     }
     const isGameOver = this.isFirstRowHaveDot();
@@ -158,7 +172,7 @@ class Board extends React.Component {
       this.pinCurrentBlock();
       this.clearFilledRow();
       this.createNewBlock();
-    } 
+    }
     this.setState({ blockX: this.getNextRowIndex() });
     return true;
   }
@@ -167,40 +181,40 @@ class Board extends React.Component {
     return total + Math.round(num);
   }
 
-  moveBlockY(i){
-    if (this.state.inDrop){
+  moveBlockY(i) {
+    if (this.state.inDrop) {
       return;
     }
     const content = this.state.block.content;
     const finalY = this.state.blockY + i;
-    if (this.AbleToMoveY(finalY, content) && !this.hitNotMovingDot(0, i)){
-      this.setState({blockY : finalY});
+    if (this.AbleToMoveY(finalY, content) && !this.hitNotMovingDot(0, i)) {
+      this.setState({ blockY: finalY });
     }
   }
 
-  AbleToMoveY(blockY, content){
-    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1] 
-    let sumsOfBlock = content[0].map(
-      (x, idx) => content.reduce((sum, curr) => sum + curr[idx], 0)
-    ).map((x) => x > 0 ? 1 : 0);
+  AbleToMoveY(blockY, content) {
+    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
+    let sumsOfBlock = content[0]
+      .map((x, idx) => content.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0));
 
-    var rightEdge = blockY + sumsOfBlock.lastIndexOf(1);;
+    var rightEdge = blockY + sumsOfBlock.lastIndexOf(1);
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
   rotateBlock() {
-    if (this.state.inDrop){
+    if (this.state.inDrop) {
       return;
     }
     const block = this.state.block;
-    var rotatedBlock;   
+    var rotatedBlock;
     if (block.name === "I" || block.name === "S" || block.name === "Z") {
       rotatedBlock = utils.rotateMatrixSpecial(block.content);
     } else {
       rotatedBlock = utils.rotateMatrix(block.content);
     }
-    
-    if (this.AbleToMoveY(this.state.blockY, rotatedBlock)){
+
+    if (this.AbleToMoveY(this.state.blockY, rotatedBlock)) {
       block.content = rotatedBlock;
       this.setState({ block: block });
     }
@@ -221,47 +235,62 @@ class Board extends React.Component {
   }
 
   drop() {
-    if (this.state.inDrop){
+    if (this.state.inDrop) {
       return;
     }
 
     this.setState({ inDrop: true });
 
     let count = 0;
-    while (this.stillCanMoveDown(count) && !this.hitNotMovingDot(count + 1, 0)) {
+    while (
+      this.stillCanMoveDown(count) &&
+      !this.hitNotMovingDot(count + 1, 0)
+    ) {
       count++;
     }
+    
+    this.props.updateScores(Score.droppedPoints(count, 2));
 
-    this.setState({ 
+    this.setState({
       blockX: this.state.blockX + count,
-      inDrop: false
+      inDrop: false,
     });
   }
 
   async repeat() {
     const current = this.props.movingBlock;
     const sleep = (milliseconds) => {
-      return new Promise(resolve => setTimeout(resolve, milliseconds))
-    }
+      return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    };
     this.mouseUpForDownButton = false;
     let accelerate = this.state.speed;
-    while (this.moveBlock() && current === this.props.movingBlock && !this.mouseUpForDownButton) {
+    let lineCount = 0;
+    while (
+      this.moveBlock() &&
+      current === this.props.movingBlock &&
+      !this.mouseUpForDownButton
+    ) {
       accelerate = accelerate / 10;
+      lineCount++;
       await sleep(accelerate);
     }
+
+    return lineCount;
   }
 
-  down() {
-    clearInterval(this.state.intervalId)
-    this.repeat();
+  async down() {
+    clearInterval(this.state.intervalId);
+
+    const line = await this.repeat();
+    this.props.updateScores(Score.droppedPoints(line, 1));
   }
 
-  mouseUp(){
+  mouseUp() {
     this.mouseUpForDownButton = true;
     let id = setInterval(() => {
       this.moveBlock();
     }, this.state.speed);
-    this.setState({intervalId : id})
+    this.setState({ intervalId: id });
   }
 
   render() {

@@ -1,18 +1,18 @@
 const Score = {
   linePoints: (level, line) => {
-    if (level < 0) {
+    if (level < 0 || line < 1) {
       return 0;
     }
-
+    level++;
     switch (line) {
-      case 0:
-        return 40 * (level + 1);
       case 1:
-        return 100 * (level + 1);
+        return 40 * level;
       case 2:
-        return 300 * (level + 1);
+        return 100 * level;
       case 3:
-        return 1200 * (level + 1);
+        return 300 * level;
+      case 4:
+        return 1200 * level;
       default:
         return 0;
     }
@@ -25,3 +25,5 @@ const Score = {
     return line * type;
   },
 };
+
+export default Score;

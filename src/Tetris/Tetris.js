@@ -21,6 +21,7 @@ class Tetris extends React.Component {
     //To bind event from child
     this.newBlockHandler = this.newBlockHandler.bind(this);
     this.rotateBlockHandler = this.rotateBlockHandler.bind(this);
+    this.updateScores = this.updateScores.bind(this);
     this.drop = this.drop.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
     this.down = this.down.bind(this);
@@ -50,11 +51,11 @@ class Tetris extends React.Component {
     this.board.current.drop();
   }
 
-  down(){
-    this.board.current.down();
+  async down() {
+    await this.board.current.down();
   }
 
-  mouseUp(){
+  mouseUp() {
     this.board.current.mouseUp();
   }
   handleKeyDown = (e) => {
@@ -96,6 +97,10 @@ class Tetris extends React.Component {
     document.removeEventListener("keydown", this.handleKeyDown, false);
   }
 
+  updateScores(scores) {
+    this.setState({ scores: this.state.scores + scores });
+  }
+
   render() {
     return (
       <>
@@ -110,6 +115,7 @@ class Tetris extends React.Component {
                 ref={this.board}
                 movingBlock={this.state.currentBlock}
                 requestNewBlock={this.newBlockHandler}
+                updateScores={this.updateScores}
               />
             </div>
             <div className="game-information">
