@@ -47,6 +47,33 @@ class Tetris extends React.Component {
     this.board.current.drop();
   }
 
+  handleKeyDown = (e) => {
+    e.preventDefault();
+    switch(e.keyCode) {
+      case 32:
+        this.drop();
+        break;
+      case 37:
+        this.moveBlockHandler(-1);
+        break;
+      case 38:
+        this.rotateBlockHandler();
+        break;
+      case 39:
+        this.moveBlockHandler(1);
+        break;
+      case 40:
+        //todo
+        break;
+      default:
+        break;
+    }
+  }
+  
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown, false);
+  }
+
   render() {
     return (
       <>
