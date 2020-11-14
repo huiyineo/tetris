@@ -3,7 +3,6 @@ import "./Tetris.css";
 import NextBlock from "./NextBlock";
 import RotateBlock from "./RotateBlock";
 import Board from "./Board";
-import Board2 from "./Board2";
 import Control from "./Control";
 import Block from "./Commons/Block";
 import SmallBoard from "./Commons/SmallBoard";
@@ -21,6 +20,7 @@ class Tetris extends React.Component {
     //To bind event from child
     this.newBlockHandler = this.newBlockHandler.bind(this);
     this.rotateBlockHandler = this.rotateBlockHandler.bind(this);
+    this.drop = this.drop.bind(this);
 
     //To create Refs with child
     this.board = React.createRef();
@@ -41,6 +41,41 @@ class Tetris extends React.Component {
   moveBlockHandler(i){
     this.board.current.moveBlockY(i);
   }  
+
+  drop(){
+    this.board.current.drop();
+  }
+
+  handleKeyDown = (e) => {
+    e.preventDefault();
+    switch(e.keyCode) {
+      case 32:
+        this.drop();
+        break;
+      case 37:
+        this.moveBlockHandler(-1);
+        break;
+      case 38:
+        this.rotateBlockHandler();
+        break;
+      case 39:
+        this.moveBlockHandler(1);
+        break;
+      case 40:
+        //todo
+        break;
+      default:
+        break;
+    }
+  }
+  
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown, false);
+  }
+
+  componentWillUnmount(){
+    document.removeEventListener("keydown", this.handleKeyDown, false);
+  }
 
   render() {
     return (
@@ -76,6 +111,7 @@ class Tetris extends React.Component {
                 rotateBlock={this.rotateBlockHandler}
                 moveLeft={() => this.moveBlockHandler(-1)}
                 moveRight={() => this.moveBlockHandler(1)}
+                drop={this.drop}
               />
             </div>
           </div>
@@ -87,8 +123,6 @@ class Tetris extends React.Component {
         <NextBlock />
         <br />
         <RotateBlock />
-        <br />
-        <Board2 />
       </>
     );
   }

@@ -8,7 +8,7 @@ class Control extends React.Component {
         <button onClick={this.props.moveRight}>Right</button>
         <button onClick={this.props.rotateBlock}>Rotate</button>
         <button onClick={() => {}}>Down</button>
-        <button onClick={() => {}}>Drop</button>
+        <button onClick={this.props.drop}>Drop</button>
         <br/>
         <button onClick={() => {}}>Play Pause</button>
         <button onClick={this.props.resetGame}>Reset</button>
