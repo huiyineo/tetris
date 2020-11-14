@@ -3,7 +3,6 @@ import "./Tetris.css";
 import NextBlock from "./NextBlock";
 import RotateBlock from "./RotateBlock";
 import Board from "./Board";
-import Board2 from "./Board2";
 import Control from "./Control";
 import Block from "./Commons/Block";
 import SmallBoard from "./Commons/SmallBoard";
