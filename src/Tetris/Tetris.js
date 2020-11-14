@@ -75,6 +75,7 @@ class Tetris extends React.Component {
         break;
       case 40: //Down arrow
         //Soft drop
+        //need to handle keyboard also
         break;
       case 80: //P
       case 112: //p
