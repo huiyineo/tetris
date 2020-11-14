@@ -15,6 +15,7 @@ class Tetris extends React.Component {
     this.state = {
       currentBlock: Block.newTgm3Random(),
       nextBlock: Block.tgm3Random(),
+      scores: 0,
     };
 
     //To bind event from child
@@ -34,46 +35,54 @@ class Tetris extends React.Component {
     return block;
   }
 
-  rotateBlockHandler() {    
+  rotateBlockHandler() {
     this.board.current.rotateBlock();
   }
 
-  moveBlockHandler(i){
+  moveBlockHandler(i) {
     this.board.current.moveBlockY(i);
-  }  
+  }
 
-  drop(){
+  drop() {
     this.board.current.drop();
   }
 
   handleKeyDown = (e) => {
     e.preventDefault();
-    switch(e.keyCode) {
-      case 32:
-        this.drop();
+    switch (e.keyCode) {
+      case 32: //Space
+        this.drop(); // can rename to hard drop
         break;
-      case 37:
+      case 37: //Left arrow
         this.moveBlockHandler(-1);
         break;
-      case 38:
+      case 38: //Up arrow
         this.rotateBlockHandler();
         break;
-      case 39:
+      case 39: //Right arrow
         this.moveBlockHandler(1);
         break;
-      case 40:
-        //todo
+      case 40: //Down arrow
+        //Soft drop
+        break;
+      case 80: //P
+      case 112: //p
+        //Pause play
+        break;
+      case 82: //R
+      case 114: //r
+        this.props.resetGame();
         break;
       default:
         break;
     }
-  }
-  
+  };
+
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown, false);
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     document.removeEventListener("keydown", this.handleKeyDown, false);
   }
 
@@ -95,7 +104,7 @@ class Tetris extends React.Component {
             </div>
             <div className="game-information">
               <div className="section-title">Score</div>
-              <div className="section-content">0</div>
+              <div className="section-content">{this.state.scores}</div>
               <div className="section-title">Level</div>
               <div className="section-content">0</div>
               <div className="section-title">Next</div>
