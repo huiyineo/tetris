@@ -10,6 +10,7 @@ class Board extends React.Component {
     this.boardRowCount = 20;
     this.boardColCount = 10;
 
+    this.mouseUpForDownButton = true;
     this.state = {
       board: this.initEmptyBoard(),
       block: Block.newSquare(this.props.movingBlock),
@@ -18,7 +19,7 @@ class Board extends React.Component {
       blockNo: 1,
       intervalId: null,
       speed: 400,
-      inDrop: false
+      inDrop: false,
     };
   }
 
@@ -149,12 +150,10 @@ class Board extends React.Component {
       clearInterval(this.state.intervalId);
       return false;
     }
-
     if (!this.stillCanMoveDown() || this.hitNotMovingDot(1, 0)) {
       this.pinCurrentBlock();
       this.clearFilledRow();
       this.createNewBlock();
-      return false;
     } 
     this.setState({ blockX: this.getNextRowIndex() });
     return true;
@@ -233,6 +232,32 @@ class Board extends React.Component {
       blockX: this.state.blockX + count,
       inDrop: false
     });
+  }
+
+  async repeat() {
+    const current = this.props.movingBlock;
+    const sleep = (milliseconds) => {
+      return new Promise(resolve => setTimeout(resolve, milliseconds))
+    }
+    this.mouseUpForDownButton = false;
+    let accelerate = this.state.speed;
+    while (this.moveBlock() && current === this.props.movingBlock && !this.mouseUpForDownButton) {
+      accelerate = accelerate / 10;
+      await sleep(accelerate);
+    }
+  }
+
+  down() {
+    clearInterval(this.state.intervalId)
+    this.repeat();
+  }
+
+  mouseUp(){
+    this.mouseUpForDownButton = true;
+    let id = setInterval(() => {
+      this.moveBlock();
+    }, this.state.speed);
+    this.setState({intervalId : id})
   }
 
   render() {
