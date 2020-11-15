@@ -33,17 +33,14 @@ const utils = {
   },
 
   rotateMatrixSpecial: (square) => {
-    const lastIdx = square.length - 1;
-    const rotatedMatrix = [];
-
-    for (let i = lastIdx; i >= 0; i--) {
-      rotatedMatrix[i] = [];
-      for (let j = lastIdx; j >= 0; j--) {
-        rotatedMatrix[i][j] = square[lastIdx - j][lastIdx - i];
-      }
+    let rotated = square;
+    if (square[0][0] > 0 || square[0][1] > 0) {
+      rotated = utils.rotateMatrix(rotated);
+      rotated = utils.rotateMatrix(rotated);
     }
+    rotated = utils.rotateMatrix(rotated);
 
-    return rotatedMatrix;
+    return rotated;
   },
 
   blockToMatrix: (block, row, col) => {
