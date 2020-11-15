@@ -84,8 +84,8 @@ class Board extends React.Component {
   clearFilledRow() {
     const board = this.state.board;
 
-    var filtered = board.filter((row) => !row.every((cell) => cell > 1));
-    var newRows = this.getRepeatedRows(
+    const filtered = board.filter((row) => !row.every((cell) => cell > 1));
+    const newRows = this.getRepeatedRows(
       new Array(this.boardColCount).fill(0),
       board.length - filtered.length
     );
