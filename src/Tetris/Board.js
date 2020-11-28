@@ -137,7 +137,7 @@ class Board extends React.Component {
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
-        if (
+        if ( 
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
