@@ -153,11 +153,26 @@ class Board extends React.Component {
   }
 
   stillCanMoveDown(extraX = 0) {
-    return (
-      this.state.blockX + this.state.block.content.length + extraX <
-      this.state.board.length
-    );
+    const block = this.state.block.content;
+    const rowHasDot = this.getLastRowHasDot(block);
+    console.log(rowHasDot);
+
+    return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
+
+  getLastRowHasDot(block) {
+    const length = block.length;
+    for (let i = length - 1; i > 0; i--) {
+      for (let j = 0; j < length; j++) {
+        if (block[i][j] > 0) {
+          return i + 1;
+        }
+      }
+    }
+
+    return 1;
+  }
+
 
   moveBlock() {
     if (this.state.inDrop) {
