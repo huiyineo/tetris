@@ -152,12 +152,10 @@ class Board extends React.Component {
     return false;
   }
 
-  stillCanMoveDown(extraX = 0) {  
-    let isBottomRowEmpty = this.state.block.content[this.state.block.content.length - 1].every(x => x === 0);
-    const bottomRowOffset = isBottomRowEmpty ? 1 : 0;
-
+  stillCanMoveDown(extraX = 0) {
     return (
-      this.state.blockX + this.state.block.content.length + extraX - bottomRowOffset < this.state.board.length
+      this.state.blockX + this.state.block.content.length + extraX <
+      this.state.board.length
     );
   }
 
