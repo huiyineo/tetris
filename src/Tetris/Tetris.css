@@ -18,17 +18,17 @@
   width: 20px;
   height: 20px;
   padding: 2px;
-  border: 2px solid #879372;
+  border: 2px solid #CCC;
   margin: 0 2px 1px 0;
   box-sizing: border-box;
 }
-
+/*#879372*/
 .dot:after {
   content: "";
   display: block;
   width: 12px;
   height: 12px;
-  background: #879372;
+  background: #CCC;
   overflow: hidden;
 }
 
@@ -44,9 +44,78 @@
 .filled {
   border-color: #333;
 }
-
 .filled:after {
   background-color: #333;
+}
+
+.filled0 {
+  border-color: purple;
+}
+.filled0:after {
+  background-color: purple;
+}
+
+.filled1 {
+  border-color: Green;
+}
+.filled1:after {
+  background-color: Green;
+}
+
+.filled2 {
+  border-color: blue;
+}
+.filled2:after {
+  background-color: blue;
+}
+
+.filled3 {
+  border-color: orange;
+}
+.filled3:after {
+  background-color: orange;
+}
+
+.filled4 {
+  border-color: brown;
+}
+.filled4:after {
+  background-color: brown;
+}
+
+.filled5 {
+  border-color: #4DA167;
+}
+.filled5:after {
+  background-color: #4DA167;
+}
+
+.filled6 {
+  border-color: #ff3f00;
+}
+.filled6:after {
+  background-color: #ff3f00;
+}
+
+.filled7 {
+  border-color: #4D5057;
+}
+.filled7:after {
+  background-color: #4D5057;
+}
+
+.filled8 {
+  border-color: #480355;
+}
+.filled8:after {
+  background-color: #480355;
+}
+
+.filled9 {
+  border-color: #63B4D1;
+}
+.filled9:after {
+  background-color: #63B4D1;
 }
 
 .button-space {
