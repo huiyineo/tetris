@@ -16,6 +16,7 @@ class Tetris extends React.Component {
       currentBlock: Block.newTgm3Random(),
       nextBlock: Block.tgm3Random(),
       scores: 0,
+      level: 0,
     };
 
     //To bind event from child
@@ -123,7 +124,7 @@ class Tetris extends React.Component {
               <div className="section-title">Score</div>
               <div className="section-content">{this.state.scores}</div>
               <div className="section-title">Level</div>
-              <div className="section-content">0</div>
+              <div className="section-content">{this.state.level}</div>
               <div className="section-title">Next</div>
               <div className="section-content">
                 <SmallBoard blockName={this.state.nextBlock} />
@@ -145,7 +146,25 @@ class Tetris extends React.Component {
           </div>
         </div>
         <div className="game-history">
-          <div className="section-title">History Scores</div>
+          <div className="section-title">
+            History Scores (highest scores: 999999)
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th className="w200">Time</th>
+                <th className="w150">Level</th>
+                <th className="w150">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>00:45:50</td>
+                <td className="right-text">10</td>
+                <td className="right-text">999999</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <NextBlock />

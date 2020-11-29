@@ -84,8 +84,8 @@ class Board extends React.Component {
   clearFilledRow() {
     const board = this.state.board;
 
-    var filtered = board.filter((row) => !row.every((cell) => cell > 1));
-    var newRows = this.getRepeatedRows(
+    const filtered = board.filter((row) => !row.every((cell) => cell > 1));
+    const newRows = this.getRepeatedRows(
       new Array(this.boardColCount).fill(0),
       board.length - filtered.length
     );
@@ -142,7 +142,7 @@ class Board extends React.Component {
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
-        if (
+        if ( 
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
@@ -158,11 +158,26 @@ class Board extends React.Component {
   }
 
   stillCanMoveDown(extraX = 0) {
-    return (
-      this.state.blockX + this.state.block.content.length + extraX <
-      this.state.board.length
-    );
+    const block = this.state.block.content;
+    const rowHasDot = this.getLastRowHasDot(block);
+    console.log(rowHasDot);
+
+    return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
+
+  getLastRowHasDot(block) {
+    const length = block.length;
+    for (let i = length - 1; i > 0; i--) {
+      for (let j = 0; j < length; j++) {
+        if (block[i][j] > 0) {
+          return i + 1;
+        }
+      }
+    }
+
+    return 1;
+  }
+
 
   moveBlock() {
     if (this.state.inDrop) {
