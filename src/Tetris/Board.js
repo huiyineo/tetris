@@ -168,8 +168,7 @@ class Board extends React.Component {
   stillCanMoveDown(extraX = 0) {
     const block = this.state.block.content;
     const rowHasDot = this.getLastRowHasDot(block);
-    console.log(rowHasDot);
-
+    
     return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
 
