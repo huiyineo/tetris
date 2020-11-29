@@ -137,7 +137,7 @@ class Board extends React.Component {
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
-        if (
+        if ( 
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
@@ -150,6 +150,14 @@ class Board extends React.Component {
     }
 
     return false;
+  }
+
+  stillCanMoveDown(extraX = 0) {
+    const block = this.state.block.content;
+    const rowHasDot = this.getLastRowHasDot(block);
+    console.log(rowHasDot);
+
+    return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
 
   getLastRowHasDot(block) {
@@ -165,12 +173,6 @@ class Board extends React.Component {
     return 1;
   }
 
-  stillCanMoveDown(extraX = 0) {
-    const block = this.state.block.content;
-    const rowHasDot = this.getLastRowHasDot(block);
-    
-    return this.state.blockX + rowHasDot + extraX < this.state.board.length;
-  }
 
   moveBlock() {
     if (this.state.inDrop) {
@@ -261,7 +263,7 @@ class Board extends React.Component {
     ) {
       count++;
     }
-
+    
     this.props.updateScores(Score.droppedPoints(count, 2));
 
     this.setState({
