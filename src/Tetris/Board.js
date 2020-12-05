@@ -285,7 +285,7 @@ class Board extends React.Component {
       current === this.props.movingBlock &&
       !this.mouseUpForDownButton
     ) {
-      accelerate = accelerate / 10;
+      accelerate = accelerate / 5;
       lineCount++;
       await sleep(accelerate);
     }
