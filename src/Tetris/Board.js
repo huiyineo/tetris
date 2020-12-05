@@ -112,15 +112,20 @@ class Board extends React.Component {
     const x = this.state.blockX;
     const y = this.state.blockY;
 
+    let leftMost = block[0]
+    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+    .map((x) => (x > 0 ? 1 : 0)).indexOf(1);
+
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
         if (
+          j >= leftMost && 
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
           block[i][j] === 1
         ) {
-          board[i + x][j + y] = value;
+          board[i + x][j + y-leftMost] = value;
         }
       }
     }
@@ -212,8 +217,7 @@ class Board extends React.Component {
     let sumsOfBlock = content[0]
       .map((x, idx) => content.reduce((sum, curr) => sum + curr[idx], 0))
       .map((x) => (x > 0 ? 1 : 0));
-
-    var rightEdge = blockY + sumsOfBlock.lastIndexOf(1);
+    var rightEdge = blockY + sumsOfBlock.lastIndexOf(1) - sumsOfBlock.indexOf(1);
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
@@ -244,9 +248,13 @@ class Board extends React.Component {
     const len = block.length;
 
     const x = rowIdx - this.state.blockX;
-    const y = colIdx - this.state.blockY;
 
-    return x >= 0 && x < len && y >= 0 && x < len && block[x][y] === 1;
+    let sumsOfBlock = block[0]
+      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0));
+    const y = colIdx - this.state.blockY + sumsOfBlock.indexOf(1);
+
+    return x >= 0 && x < len && y >= 0 && block[x][y] === 1;
   }
 
   drop() {
