@@ -26,11 +26,7 @@ class Board extends React.Component {
   }
 
   initEmptyBoard() {
-    const dots = new Array(this.boardRowCount);
-    for (var i = 0; i < dots.length; i++) {
-      dots[i] = new Array(this.boardColCount).fill(0);
-    }
-    return dots;
+    return this.getRepeatedRows(this.boardRowCount);
   }
 
   componentDidMount() {
@@ -59,10 +55,10 @@ class Board extends React.Component {
   }
 
   pinCurrentBlock() {
-    this.setState({
+    const newBoard = this.drawBlockInBoard(this.state.blockNo);
+        this.setState({
       blockNo: this.state.blockNo + 1,
     });
-    const newBoard = this.drawBlockInBoard(this.state.blockNo);
     this.setState({ board: newBoard });
   }
 
@@ -74,21 +70,19 @@ class Board extends React.Component {
     return this.state.blockX - 1;
   }
 
-  getRepeatedRows(arr, repeats) {
-    var func = (arr, repeats) => [
-      ...Array.from({ length: repeats }, () => arr),
-    ];
-    return func(arr, repeats);
+  getRepeatedRows(repeats) {
+    const rows = new Array(repeats);
+    for (var i = 0; i < repeats; i++) {
+      rows[i] = new Array(this.boardColCount).fill(0);
+    }
+    return rows;
   }
 
   clearFilledRow() {
     const board = this.state.board;
 
-    const filtered = board.filter((row) => !row.every((cell) => cell > 1));
-    const newRows = this.getRepeatedRows(
-      new Array(this.boardColCount).fill(0),
-      board.length - filtered.length
-    );
+    const filtered = board.filter((row) => !row.every((cell) => cell >= 1));
+    const newRows = this.getRepeatedRows(board.length - filtered.length);
 
     const filledRowCount = this.boardRowCount - filtered.length;
     this.props.updateScores(this.calculateScores(filledRowCount));
@@ -110,27 +104,28 @@ class Board extends React.Component {
     const block = this.state.block.content;
     const len = block.length;
     const x = this.state.blockX;
-    const y = this.state.blockY;
-
-    let leftMost = block[0]
-    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-    .map((x) => (x > 0 ? 1 : 0)).indexOf(1);
+    const y = this.state.blockY - this.getYOffset(block);
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
         if (
-          j >= leftMost && 
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
           block[i][j] === 1
         ) {
-          board[i + x][j + y-leftMost] = value;
+          board[i + x][j + y] = value;
         }
       }
     }
-
+    
     return board;
+  }
+
+  getYOffset(block){ //find the leftmost block
+    return block[0]
+      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0)).indexOf(1);
   }
 
   hitNotMovingDot(moveX = 0, moveY = 0) {
@@ -138,7 +133,7 @@ class Board extends React.Component {
     const block = this.state.block.content;
     const len = block.length;
     const x = this.state.blockX + moveX;
-    const y = this.state.blockY + moveY;
+    const y = this.state.blockY + moveY - this.getYOffset(block);
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
@@ -160,8 +155,6 @@ class Board extends React.Component {
   stillCanMoveDown(extraX = 0) {
     const block = this.state.block.content;
     const rowHasDot = this.getLastRowHasDot(block);
-    console.log(rowHasDot);
-
     return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
 
@@ -169,7 +162,7 @@ class Board extends React.Component {
     const length = block.length;
     for (let i = length - 1; i > 0; i--) {
       for (let j = 0; j < length; j++) {
-        if (block[i][j] > 0) {
+        if (block[i][j] > 0) { 
           return i + 1;
         }
       }
@@ -221,26 +214,44 @@ class Board extends React.Component {
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
+  GetExtraBlockToWallKick(blockY, currentBlock, NewBlock) {
+    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
+    let newBlockLengthArray = NewBlock[0]
+      .map((x, idx) => NewBlock.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0));
+      
+    let newBlockLength = newBlockLengthArray.lastIndexOf(1) - newBlockLengthArray.indexOf(1);
+    var rightEdge = blockY + newBlockLength;
+    return (this.boardColCount-1) - rightEdge < 0 ?  (this.boardColCount-1) - rightEdge : 0;
+  }
+
   rotateBlock() {
     if (this.state.inDrop) {
       return;
     }
     const block = this.state.block;
-    var rotatedBlock;
-    if (block.name === "I" || block.name === "S" || block.name === "Z") {
-      rotatedBlock = utils.rotateMatrixSpecial(block.content);
-    } else {
-      rotatedBlock = utils.rotateMatrix(block.content);
-    }
+    var rotatedBlock = this.GetRotatedBlock(block);
+    
+    block.content = rotatedBlock;
+    this.setState({ block: block });
 
-    if (this.AbleToMoveY(this.state.blockY, rotatedBlock)) {
-      block.content = rotatedBlock;
-      this.setState({ block: block });
+    if (this.state.blockY > 0) {
+      let right = this.GetExtraBlockToWallKick(this.state.blockY, block.content, rotatedBlock);
+      if (right === 0) return;
+      this.moveBlockY(right);
+    }
+  }
+
+  GetRotatedBlock(block){
+    if (block.name === "I" || block.name === "S" || block.name === "Z") {
+      return utils.rotateMatrixSpecial(block.content);
+    } else {
+      return utils.rotateMatrix(block.content);
     }
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
-    if (value > 1) {
+    if (value >= 1) {
       return true;
     }
 
@@ -248,11 +259,7 @@ class Board extends React.Component {
     const len = block.length;
 
     const x = rowIdx - this.state.blockX;
-
-    let sumsOfBlock = block[0]
-      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-      .map((x) => (x > 0 ? 1 : 0));
-    const y = colIdx - this.state.blockY + sumsOfBlock.indexOf(1);
+    const y = colIdx - this.state.blockY + this.getYOffset(block);
 
     return x >= 0 && x < len && y >= 0 && block[x][y] === 1;
   }
@@ -293,7 +300,7 @@ class Board extends React.Component {
       current === this.props.movingBlock &&
       !this.mouseUpForDownButton
     ) {
-      accelerate = accelerate / 10;
+      accelerate = accelerate / 5;
       lineCount++;
       await sleep(accelerate);
     }

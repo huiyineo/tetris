@@ -76,7 +76,7 @@ class Tetris extends React.Component {
         break;
       case 40: //Down arrow
         //Soft drop
-        //need to handle keyboard also
+        this.down();
         break;
       case 80: //P
       case 112: //p
@@ -91,8 +91,20 @@ class Tetris extends React.Component {
     }
   };
 
+  handleKeyUp = (e) => {
+    e.preventDefault();
+    switch (e.keyCode) {
+      case 40:
+        this.mouseUp();
+        break;
+      default:
+        break;
+    }
+  }
+
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown, false);
+    document.addEventListener("keyup", this.handleKeyUp, false);
   }
 
   componentWillUnmount() {
