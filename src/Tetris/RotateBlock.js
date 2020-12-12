@@ -22,11 +22,7 @@ class RotateBlock extends React.Component {
 
   rotateBlocks(blocks) {
     blocks.forEach((block) => {
-      if (block.name === "I" || block.name === "S" || block.name === "Z") {
-        block.content = utils.rotateMatrixSpecial(block.content);
-      } else {
-        block.content = utils.rotateMatrix(block.content);
-      }
+      block.content = utils.rotateMatrix(block.content);
     });
 
     return blocks;

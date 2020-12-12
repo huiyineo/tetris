@@ -5,7 +5,7 @@ class Dot extends React.Component {
     return (
       <>
         <div className={this.props.isActivated 
-          ? "dot filled" + (this.props.value ? this.props.value % 10 : "") : "dot"}></div>
+          ? "dot filled" + (this.props.value ? this.props.value % 10 : "") : (this.props.isInBlock? "dot highlight" : "dot")}></div>
         {/* <span className="dot-content">
           {this.props.value ? this.props.value : ""}
         </span> */}

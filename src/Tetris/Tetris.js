@@ -13,8 +13,8 @@ class Tetris extends React.Component {
     super(props);
 
     this.state = {
-      currentBlock: Block.newTgm3Random(),
-      nextBlock: Block.tgm3Random(),
+      currentBlockLetter: Block.newTgm3Random(),
+      nextBlockLetter: Block.tgm3Random(),
       scores: 0,
       level: 0,
     };
@@ -33,9 +33,12 @@ class Tetris extends React.Component {
   }
 
   newBlockHandler() {
-    const block = this.state.nextBlock;
+    const block = this.state.nextBlockLetter;
 
-    this.setState({ currentBlock: block, nextBlock: Block.tgm3Random() });
+    this.setState({
+      currentBlockLetter: block,
+      nextBlockLetter: Block.tgm3Random(),
+    });
 
     return block;
   }
@@ -45,7 +48,7 @@ class Tetris extends React.Component {
   }
 
   moveBlockHandler(i) {
-    this.board.current.moveBlockY(i);
+    this.board.current.shiftLeftRight(i);
   }
 
   drop() {
@@ -57,8 +60,13 @@ class Tetris extends React.Component {
   }
 
   mouseUp() {
-    this.board.current.mouseUp();
+    if (this.board.current) {
+      this.board.current.mouseUp();
+    } else {
+      console.log("How come board is NULL here");
+    }
   }
+
   handleKeyDown = (e) => {
     e.preventDefault();
     switch (e.keyCode) {
@@ -100,7 +108,7 @@ class Tetris extends React.Component {
       default:
         break;
     }
-  }
+  };
 
   componentDidMount() {
     document.addEventListener("keydown", this.handleKeyDown, false);
@@ -127,7 +135,7 @@ class Tetris extends React.Component {
             <div className="game-board">
               <Board
                 ref={this.board}
-                movingBlock={this.state.currentBlock}
+                movingBlock={this.state.currentBlockLetter}
                 requestNewBlock={this.newBlockHandler}
                 updateScores={this.updateScores}
               />
@@ -139,7 +147,7 @@ class Tetris extends React.Component {
               <div className="section-content">{this.state.level}</div>
               <div className="section-title">Next</div>
               <div className="section-content">
-                <SmallBoard blockName={this.state.nextBlock} />
+                <SmallBoard blockName={this.state.nextBlockLetter} />
               </div>
               <div className="section-title">Status</div>
               <div className="section-content">work in progress</div>

@@ -12,11 +12,14 @@ class Board extends React.Component {
     this.boardColCount = 10;
 
     this.mouseUpForDownButton = true;
+    const newBlock = Block.newSquare(this.props.movingBlock);
+    const blockY = newBlock.name === "I" ? 3 : 4;
+
     this.state = {
       board: this.initEmptyBoard(),
-      block: Block.newSquare(this.props.movingBlock),
+      block: newBlock,
       blockX: -3,
-      blockY: 4,
+      blockY: blockY,
       blockNo: 1,
       intervalId: null,
       speed: 400,
@@ -30,23 +33,29 @@ class Board extends React.Component {
   }
 
   componentDidMount() {
-    const intervalId = setInterval(() => {
-      this.moveBlock();
-    }, this.state.speed);
-    this.setState({ intervalId: intervalId });
+    this.setIntervalNormalMoveDown();
   }
 
   componentWillUnmount() {
     clearInterval(this.state.intervalId);
   }
 
+  setIntervalNormalMoveDown() {
+    const intervalId = setInterval(() => {
+      this.moveBlock();
+    }, this.state.speed);
+    this.setState({ intervalId: intervalId });
+  }
+
   createNewBlock() {
-    this.props.requestNewBlock();
+    const blockLetter = this.props.requestNewBlock();
+    const newBlock = Block.newSquare(blockLetter);
+    const blockY = newBlock.name === "I" ? 3 : 4;
 
     this.setState({
       blockX: -3,
-      blockY: 4,
-      block: Block.newSquare(this.props.movingBlock),
+      blockY: blockY,
+      block: newBlock,
     });
   }
 
@@ -56,7 +65,7 @@ class Board extends React.Component {
 
   pinCurrentBlock() {
     const newBoard = this.drawBlockInBoard(this.state.blockNo);
-        this.setState({
+    this.setState({
       blockNo: this.state.blockNo + 1,
     });
     this.setState({ board: newBoard });
@@ -118,14 +127,16 @@ class Board extends React.Component {
         }
       }
     }
-    
+
     return board;
   }
 
-  getYOffset(block){ //find the leftmost block
+  getYOffset(block) {
+    //find the leftmost block
     return block[0]
       .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-      .map((x) => (x > 0 ? 1 : 0)).indexOf(1);
+      .map((x) => (x > 0 ? 1 : 0))
+      .indexOf(1);
   }
 
   hitNotMovingDot(moveX = 0, moveY = 0) {
@@ -137,7 +148,7 @@ class Board extends React.Component {
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
-        if ( 
+        if (
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
@@ -162,7 +173,7 @@ class Board extends React.Component {
     const length = block.length;
     for (let i = length - 1; i > 0; i--) {
       for (let j = 0; j < length; j++) {
-        if (block[i][j] > 0) { 
+        if (block[i][j] > 0) {
           return i + 1;
         }
       }
@@ -171,8 +182,9 @@ class Board extends React.Component {
     return 1;
   }
 
-
-  moveBlock() {
+  moveBlock() {    
+    this.printBlock();
+    
     if (this.state.inDrop) {
       return;
     }
@@ -194,35 +206,48 @@ class Board extends React.Component {
     return total + Math.round(num);
   }
 
-  moveBlockY(i) {
+  shiftLeftRight(i) {
     if (this.state.inDrop) {
       return;
     }
     const content = this.state.block.content;
     const finalY = this.state.blockY + i;
-    if (this.AbleToMoveY(finalY, content) && !this.hitNotMovingDot(0, i)) {
+
+    if (
+      this.ableToShiftLeftRight(finalY, content) &&
+      !this.hitNotMovingDot(0, i)
+    ) {
       this.setState({ blockY: finalY });
     }
   }
 
-  AbleToMoveY(blockY, content) {
+  ableToShiftLeftRight(blockY, content) {
     //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
     let sumsOfBlock = content[0]
       .map((x, idx) => content.reduce((sum, curr) => sum + curr[idx], 0))
       .map((x) => (x > 0 ? 1 : 0));
-    var rightEdge = blockY + sumsOfBlock.lastIndexOf(1) - sumsOfBlock.indexOf(1);
+    var rightEdge =
+      blockY + sumsOfBlock.lastIndexOf(1) - sumsOfBlock.indexOf(1);
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
-  GetExtraBlockToWallKick(blockY, currentBlock, NewBlock) {
+  getExtraBlockToWallKick(blockY, currentBlock, NewBlock) {
     //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
     let newBlockLengthArray = NewBlock[0]
       .map((x, idx) => NewBlock.reduce((sum, curr) => sum + curr[idx], 0))
       .map((x) => (x > 0 ? 1 : 0));
-      
-    let newBlockLength = newBlockLengthArray.lastIndexOf(1) - newBlockLengthArray.indexOf(1);
+
+    let newBlockLength =
+      newBlockLengthArray.lastIndexOf(1) - newBlockLengthArray.indexOf(1);
     var rightEdge = blockY + newBlockLength;
-    return (this.boardColCount-1) - rightEdge < 0 ?  (this.boardColCount-1) - rightEdge : 0;
+    return this.boardColCount - 1 - rightEdge < 0
+      ? this.boardColCount - 1 - rightEdge
+      : 0;
+  }
+
+  printBlock(){
+    console.log(this.state.block.name);
+    utils.printMatrix(this.state.block.content);
   }
 
   rotateBlock() {
@@ -230,23 +255,19 @@ class Board extends React.Component {
       return;
     }
     const block = this.state.block;
-    var rotatedBlock = this.GetRotatedBlock(block);
-    
+    var rotatedBlock = utils.rotateMatrix(block.content);
+
     block.content = rotatedBlock;
     this.setState({ block: block });
 
     if (this.state.blockY > 0) {
-      let right = this.GetExtraBlockToWallKick(this.state.blockY, block.content, rotatedBlock);
+      let right = this.getExtraBlockToWallKick(
+        this.state.blockY,
+        block.content,
+        rotatedBlock
+      );
       if (right === 0) return;
-      this.moveBlockY(right);
-    }
-  }
-
-  GetRotatedBlock(block){
-    if (block.name === "I" || block.name === "S" || block.name === "Z") {
-      return utils.rotateMatrixSpecial(block.content);
-    } else {
-      return utils.rotateMatrix(block.content);
+      this.shiftLeftRight(right);
     }
   }
 
@@ -264,6 +285,20 @@ class Board extends React.Component {
     return x >= 0 && x < len && y >= 0 && block[x][y] === 1;
   }
 
+  checkIsInBlock(value, rowIdx, colIdx) {
+    if (value >= 1) {
+      return false;
+    }
+
+    const block = this.state.block.content;
+    const len = block.length;
+
+    const x = rowIdx - this.state.blockX;
+    const y = colIdx - this.state.blockY + this.getYOffset(block);
+
+    return x >= 0 && x < len && y >= 0 && y < len;
+  }
+
   drop() {
     if (this.state.inDrop) {
       return;
@@ -278,7 +313,7 @@ class Board extends React.Component {
     ) {
       count++;
     }
-    
+
     this.props.updateScores(Score.droppedPoints(count, 2));
 
     this.setState({
@@ -288,7 +323,7 @@ class Board extends React.Component {
   }
 
   async repeat() {
-    const current = this.props.movingBlock;
+    const current = this.state.block.name;
     const sleep = (milliseconds) => {
       return new Promise((resolve) => setTimeout(resolve, milliseconds));
     };
@@ -297,7 +332,7 @@ class Board extends React.Component {
     let lineCount = 0;
     while (
       this.moveBlock() &&
-      current === this.props.movingBlock &&
+      current === this.state.block.name &&
       !this.mouseUpForDownButton
     ) {
       accelerate = accelerate / 5;
@@ -317,10 +352,7 @@ class Board extends React.Component {
 
   mouseUp() {
     this.mouseUpForDownButton = true;
-    let id = setInterval(() => {
-      this.moveBlock();
-    }, this.state.speed);
-    this.setState({ intervalId: id });
+    this.setIntervalNormalMoveDown();
   }
 
   render() {
@@ -332,6 +364,7 @@ class Board extends React.Component {
               <Dot
                 key={colIdx}
                 isActivated={this.checkIsActivated(value, rowIdx, colIdx)}
+                isInBlock={this.checkIsInBlock(value, rowIdx, colIdx)}
                 value={value}
               />
             );
