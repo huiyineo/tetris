@@ -110,22 +110,17 @@ class Board extends React.Component {
     const block = this.state.block.content;
     const len = block.length;
     const x = this.state.blockX;
-    const y = this.state.blockY;
-
-    let leftMost = block[0]
-    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-    .map((x) => (x > 0 ? 1 : 0)).indexOf(1);
+    const y = this.state.blockY - this.getYOffset(block);
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
         if (
-          j >= leftMost && 
           i + x >= 0 &&
           j + y >= 0 &&
           i + x < board.length &&
           block[i][j] === 1
         ) {
-          board[i + x][j + y-leftMost] = value;
+          board[i + x][j + y] = value;
         }
       }
     }
@@ -133,12 +128,18 @@ class Board extends React.Component {
     return board;
   }
 
+  getYOffset(block){ //find the leftmost block
+    return block[0]
+      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0)).indexOf(1);
+  }
+
   hitNotMovingDot(moveX = 0, moveY = 0) {
     const board = this.state.board;
     const block = this.state.block.content;
     const len = block.length;
     const x = this.state.blockX + moveX;
-    const y = this.state.blockY + moveY;
+    const y = this.state.blockY + moveY - this.getYOffset(block);
 
     for (let i = len - 1; i >= 0; i--) {
       for (let j = 0; j < len; j++) {
@@ -160,8 +161,6 @@ class Board extends React.Component {
   stillCanMoveDown(extraX = 0) {
     const block = this.state.block.content;
     const rowHasDot = this.getLastRowHasDot(block);
-    console.log(rowHasDot);
-
     return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
 
@@ -169,7 +168,7 @@ class Board extends React.Component {
     const length = block.length;
     for (let i = length - 1; i > 0; i--) {
       for (let j = 0; j < length; j++) {
-        if (block[i][j] > 0) {
+        if (block[i][j] > 0) { 
           return i + 1;
         }
       }
@@ -248,11 +247,7 @@ class Board extends React.Component {
     const len = block.length;
 
     const x = rowIdx - this.state.blockX;
-
-    let sumsOfBlock = block[0]
-      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-      .map((x) => (x > 0 ? 1 : 0));
-    const y = colIdx - this.state.blockY + sumsOfBlock.indexOf(1);
+    const y = colIdx - this.state.blockY + this.getYOffset(block);
 
     return x >= 0 && x < len && y >= 0 && block[x][y] === 1;
   }
