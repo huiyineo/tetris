@@ -160,7 +160,6 @@ class Board extends React.Component {
   stillCanMoveDown(extraX = 0) {
     const block = this.state.block.content;
     const rowHasDot = this.getLastRowHasDot(block);
-    console.log(rowHasDot);
 
     return this.state.blockX + rowHasDot + extraX < this.state.board.length;
   }
@@ -221,21 +220,39 @@ class Board extends React.Component {
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
+  GetExtraBlockToWallKick(blockY, currentBlock, NewBlock) {
+    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
+    let newBlockLengthArray = NewBlock[0]
+      .map((x, idx) => NewBlock.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0));
+      
+    let newBlockLength = newBlockLengthArray.lastIndexOf(1) - newBlockLengthArray.indexOf(1);
+    var rightEdge = blockY + newBlockLength;
+    return (this.boardColCount-1) - rightEdge < 0 ?  (this.boardColCount-1) - rightEdge : 0;
+  }
+
   rotateBlock() {
     if (this.state.inDrop) {
       return;
     }
     const block = this.state.block;
-    var rotatedBlock;
-    if (block.name === "I" || block.name === "S" || block.name === "Z") {
-      rotatedBlock = utils.rotateMatrixSpecial(block.content);
-    } else {
-      rotatedBlock = utils.rotateMatrix(block.content);
-    }
+    var rotatedBlock = this.GetRotatedBlock(block);
+    
+    block.content = rotatedBlock;
+    this.setState({ block: block });
 
-    if (this.AbleToMoveY(this.state.blockY, rotatedBlock)) {
-      block.content = rotatedBlock;
-      this.setState({ block: block });
+    if (this.state.blockY > 0) {
+      let right = this.GetExtraBlockToWallKick(this.state.blockY, block.content, rotatedBlock);
+      if (right === 0) return;
+      this.moveBlockY(right);
+    }
+  }
+
+  GetRotatedBlock(block){
+    if (block.name === "I" || block.name === "S" || block.name === "Z") {
+      return utils.rotateMatrixSpecial(block.content);
+    } else {
+      return utils.rotateMatrix(block.content);
     }
   }
 
