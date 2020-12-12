@@ -59,10 +59,10 @@ class Board extends React.Component {
   }
 
   pinCurrentBlock() {
-    this.setState({
+    const newBoard = this.drawBlockInBoard(this.state.blockNo);
+        this.setState({
       blockNo: this.state.blockNo + 1,
     });
-    const newBoard = this.drawBlockInBoard(this.state.blockNo);
     this.setState({ board: newBoard });
   }
 
@@ -124,7 +124,7 @@ class Board extends React.Component {
         }
       }
     }
-
+    
     return board;
   }
 
@@ -239,7 +239,7 @@ class Board extends React.Component {
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
-    if (value > 1) {
+    if (value >= 1) {
       return true;
     }
 
