@@ -12,14 +12,12 @@ class Board extends React.Component {
     this.boardColCount = 10;
 
     this.mouseUpForDownButton = true;
-    const newBlock = Block.newSquare(this.props.movingBlock);
-    const blockY = newBlock.name === "I" ? 3 : 4;
 
     this.state = {
       board: this.initEmptyBoard(),
-      block: newBlock,
+      block: Block.newSquare(this.props.movingBlock),
       blockX: -3,
-      blockY: blockY,
+      blockY: 4,
       blockNo: 1,
       intervalId: null,
       speed: 400,
@@ -49,13 +47,11 @@ class Board extends React.Component {
 
   createNewBlock() {
     const blockLetter = this.props.requestNewBlock();
-    const newBlock = Block.newSquare(blockLetter);
-    const blockY = newBlock.name === "I" ? 3 : 4;
 
     this.setState({
       blockX: -3,
-      blockY: blockY,
-      block: newBlock,
+      blockY: 4,
+      block: Block.newSquare(blockLetter),
     });
   }
 
@@ -182,9 +178,9 @@ class Board extends React.Component {
     return 1;
   }
 
-  moveBlock() {    
+  moveBlock() {
     this.printBlock();
-    
+
     if (this.state.inDrop) {
       return;
     }
@@ -245,7 +241,7 @@ class Board extends React.Component {
       : 0;
   }
 
-  printBlock(){
+  printBlock() {
     console.log(this.state.block.name);
     utils.printMatrix(this.state.block.content);
   }
