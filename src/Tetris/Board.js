@@ -26,11 +26,7 @@ class Board extends React.Component {
   }
 
   initEmptyBoard() {
-    const dots = new Array(this.boardRowCount);
-    for (var i = 0; i < dots.length; i++) {
-      dots[i] = new Array(this.boardColCount).fill(0);
-    }
-    return dots;
+    return this.getRepeatedRows(this.boardRowCount);
   }
 
   componentDidMount() {
@@ -74,21 +70,19 @@ class Board extends React.Component {
     return this.state.blockX - 1;
   }
 
-  getRepeatedRows(arr, repeats) {
-    var func = (arr, repeats) => [
-      ...Array.from({ length: repeats }, () => arr),
-    ];
-    return func(arr, repeats);
+  getRepeatedRows(repeats) {
+    const rows = new Array(repeats);
+    for (var i = 0; i < repeats; i++) {
+      rows[i] = new Array(this.boardColCount).fill(0);
+    }
+    return rows;
   }
 
   clearFilledRow() {
     const board = this.state.board;
 
-    const filtered = board.filter((row) => !row.every((cell) => cell > 1));
-    const newRows = this.getRepeatedRows(
-      new Array(this.boardColCount).fill(0),
-      board.length - filtered.length
-    );
+    const filtered = board.filter((row) => !row.every((cell) => cell >= 1));
+    const newRows = this.getRepeatedRows(board.length - filtered.length);
 
     const filledRowCount = this.boardRowCount - filtered.length;
     this.props.updateScores(this.calculateScores(filledRowCount));
