@@ -18,6 +18,22 @@ const utils = {
     console.log(output);
   },
 
+  printBlock: (block) => {
+    let output = "";
+    const rowLen = block.content.length;
+    console.log(block.name);
+
+    for (let i = 0; i < rowLen; i++) {
+      const colLen = block.content[i].length;
+
+      for (let j = 0; j < colLen; j++) {
+        output += block.content[i][j].toString().padStart(5, " ");
+      }
+      output += "\n";
+    }
+    console.log(output);
+  },
+
   rotateMatrix: (square) => {
     const len = square.length;
     const rotatedMatrix = [];

@@ -4,10 +4,10 @@ const Block = {
   pieces: ["I", "J", "L", "O", "S", "T", "Z"],
   blocks: {
     I: [
-      [0, 1],
-      [0, 1],
-      [0, 1],
-      [0, 1],
+      [1],
+      [1],
+      [1],
+      [1],
     ],
     J: [
       [0, 1],
@@ -73,12 +73,11 @@ const Block = {
   },
 
   newSquare: (letter) => {
-    const block = Block.new(letter);
-    const len = Math.max(block.content.length, block.content[0].length);
-
-    block.content = utils.blockToMatrix(block.content, len, len);
-
-    return block;
+    return Block.new(letter);
+    //const block = Block.new(letter);    
+    //const len = Math.max(block.content.length, block.content[0].length);
+    //block.content = utils.blockToMatrix(block.content, len, len);
+    //return block;
   },
 
   next: (letter) => {

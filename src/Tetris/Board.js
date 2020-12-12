@@ -18,7 +18,7 @@ class Board extends React.Component {
       block: Block.newSquare(this.props.movingBlock),
       blockX: -3,
       blockY: 4,
-      blockNo: 1,
+      blockNo: 2,
       intervalId: null,
       speed: 400,
       inDrop: false,
@@ -107,12 +107,13 @@ class Board extends React.Component {
   drawBlockInBoard(value) {
     const board = this.state.board;
     const block = this.state.block.content;
-    const len = block.length;
+    const lenX = block.length;
+    const lenY = block[0].length;
     const x = this.state.blockX;
     const y = this.state.blockY - this.getYOffset(block);
 
-    for (let i = len - 1; i >= 0; i--) {
-      for (let j = 0; j < len; j++) {
+    for (let i = lenX - 1; i >= 0; i--) {
+      for (let j = 0; j < lenY; j++) {
         if (
           i + x >= 0 &&
           j + y >= 0 &&
@@ -138,12 +139,13 @@ class Board extends React.Component {
   hitNotMovingDot(moveX = 0, moveY = 0) {
     const board = this.state.board;
     const block = this.state.block.content;
-    const len = block.length;
+    const lenX = block.length;
+    const lenY = block[0].length;
     const x = this.state.blockX + moveX;
     const y = this.state.blockY + moveY - this.getYOffset(block);
 
-    for (let i = len - 1; i >= 0; i--) {
-      for (let j = 0; j < len; j++) {
+    for (let i = lenX - 1; i >= 0; i--) {
+      for (let j = 0; j < lenY; j++) {
         if (
           i + x >= 0 &&
           j + y >= 0 &&
@@ -166,9 +168,11 @@ class Board extends React.Component {
   }
 
   getLastRowHasDot(block) {
-    const length = block.length;
-    for (let i = length - 1; i > 0; i--) {
-      for (let j = 0; j < length; j++) {
+    const lenX = block.length;
+    const lenY = block[0].length;
+
+    for (let i = lenX - 1; i > 0; i--) {
+      for (let j = 0; j < lenY; j++) {
         if (block[i][j] > 0) {
           return i + 1;
         }
@@ -178,9 +182,7 @@ class Board extends React.Component {
     return 1;
   }
 
-  moveBlock() {
-    this.printBlock();
-
+  moveBlock() {    
     if (this.state.inDrop) {
       return;
     }
@@ -242,8 +244,7 @@ class Board extends React.Component {
   }
 
   printBlock() {
-    console.log(this.state.block.name);
-    utils.printMatrix(this.state.block.content);
+    utils.printBlock(this.state.block);
   }
 
   rotateBlock() {
@@ -273,12 +274,12 @@ class Board extends React.Component {
     }
 
     const block = this.state.block.content;
-    const len = block.length;
-
+    const lenX = block.length;
+    
     const x = rowIdx - this.state.blockX;
     const y = colIdx - this.state.blockY + this.getYOffset(block);
 
-    return x >= 0 && x < len && y >= 0 && block[x][y] === 1;
+    return x >= 0 && x < lenX && y >= 0 && block[x][y] === 1;
   }
 
   checkIsInBlock(value, rowIdx, colIdx) {
@@ -287,12 +288,13 @@ class Board extends React.Component {
     }
 
     const block = this.state.block.content;
-    const len = block.length;
+    const lenX = block.length;
+    const lenY = block[0].length;
 
     const x = rowIdx - this.state.blockX;
     const y = colIdx - this.state.blockY + this.getYOffset(block);
 
-    return x >= 0 && x < len && y >= 0 && y < len;
+    return x >= 0 && x < lenX && y >= 0 && y < lenY;
   }
 
   drop() {
