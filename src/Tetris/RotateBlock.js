@@ -9,30 +9,32 @@ class RotateBlock extends React.Component {
 
     this.state = {
       blocks: [
-        Block.newSquare("I"),
-        Block.newSquare("J"),
-        Block.newSquare("L"),
-        Block.newSquare("O"),
-        Block.newSquare("S"),
-        Block.newSquare("T"),
-        Block.newSquare("Z"),
+        { block: Block.newSquare("I"), x: 0, y: 1 },
+        { block: Block.newSquare("J"), x: 0, y: 0 },
+        { block: Block.newSquare("L"), x: 0, y: 0 },
+        { block: Block.newSquare("O"), x: 0, y: 0 },
+        { block: Block.newSquare("S"), x: 0, y: 0 },
+        { block: Block.newSquare("T"), x: 0, y: 0 },
+        { block: Block.newSquare("Z"), x: 0, y: 0 },
       ],
     };
   }
 
   rotateBlocks(blocks) {
-    blocks.forEach((block) => {
-      block.content = utils.rotateMatrix(block.content);
+    blocks.forEach((blockObj) => {
+      blockObj.block = utils.rotateBlock(blockObj.block);
+      blockObj.x = blockObj.x + blockObj.block.transformX;
+      blockObj.y = blockObj.y + blockObj.block.transformY;
     });
 
     return blocks;
   }
 
   render() {
-    const smallBoard = this.state.blocks.map((block, blockIdx) => {
+    const smallBoard = this.state.blocks.map((blockObj, blockIdx) => {
       return (
         <div key={blockIdx} className="rotate-block">
-          {block.content.map((row, rowIdx) => (
+          {utils.putBlockInSquare(blockObj.block, blockObj.x, blockObj.y).map((row, rowIdx) => (
             <div key={rowIdx}>
               {row.map((value, colIdx) => (
                 <Dot key={colIdx} isActivated={value !== 0} />

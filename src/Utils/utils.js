@@ -34,6 +34,143 @@ const utils = {
     console.log(output);
   },
 
+  putBlockInSquare: (block, startX, startY) => {
+    const matrix = [];
+    const content = block.content;
+    const blockRow = content.length;
+    const blockCol = content[0].length;
+    const size = Math.max(blockRow, blockCol);
+
+    for (let i = 0; i < size; i++) {
+      matrix[i] = [];
+      for (let j = 0; j < size; j++) {
+        if (
+          i - startX >= 0 &&
+          j - startY >= 0 &&
+          i < blockRow + startX &&
+          j < blockCol + startY
+        ) {
+          matrix[i][j] = content[i - startX][j - startY];
+        } else {
+          matrix[i][j] = 0;
+        }
+      }
+    }
+
+    return matrix;
+  },
+
+  rotateBlock: (block) => {
+    if (block.name === "O") {
+      return block;
+    }
+
+    const tetris = {
+      I: [[[1], [1], [1], [1]], [[1, 1, 1, 1]]],
+      J: [
+        [
+          [0, 1],
+          [0, 1],
+          [1, 1],
+        ],
+        [
+          [1, 0, 0],
+          [1, 1, 1],
+        ],
+        [
+          [1, 1],
+          [1, 0],
+          [1, 0],
+        ],
+        [
+          [1, 1, 1],
+          [0, 0, 1],
+        ],
+      ],
+      L: [
+        [
+          [1, 1],
+          [0, 1],
+          [0, 1],
+        ],
+        [
+          [0, 0, 1],
+          [1, 1, 1],
+        ],
+        [
+          [1, 0],
+          [1, 0],
+          [1, 1],
+        ],
+        [
+          [1, 1, 1],
+          [1, 0, 0],
+        ],
+      ],
+      S: [
+        [
+          [1, 0],
+          [1, 1],
+          [0, 1],
+        ],
+        [
+          [0, 1, 1],
+          [1, 1, 0],
+        ],
+      ],
+      T: [
+        [
+          [0, 1, 0],
+          [1, 1, 1],
+        ],
+        [
+          [1, 0],
+          [1, 1],
+          [1, 0],
+        ],
+        [
+          [1, 1, 1],
+          [0, 1, 0],
+        ],
+        [
+          [0, 1],
+          [1, 1],
+          [0, 1],
+        ],
+      ],
+      Z: [
+        [
+          [0, 1],
+          [1, 1],
+          [1, 0],
+        ],
+        [
+          [1, 1, 0],
+          [0, 1, 1],
+        ],
+      ],
+    };
+    const relTransformList ={
+      I: [[-2, 1],[1, -1],[-1, 2],[2, -2],],
+      J: [[-1, 0],[0, 0],[0, 1],[1, -1],],
+      L: [[-1, 0],[0, 0],[0, 1],[1, -1],],
+      S: [[-1, 0],[0, 0],[0, 1],[1, -1],],
+      T: [[0, 0],[0, 1],[1, -1],[-1, 0],],
+      Z: [[-1, 0],[0, 0],[0, 1],[1, -1],],}
+
+    const blocks = tetris[block.name];
+    const relTransform = relTransformList[block.name];
+
+    let nextIdx = (block.index + 1) % relTransform.length;
+    block.content = blocks[nextIdx % blocks.length];
+    block.index = nextIdx;
+    
+    block.transformX = relTransform[nextIdx][0];
+    block.transformY = relTransform[nextIdx][1];
+
+    return block;    
+  },
+
   rotateMatrix: (square) => {
     const len = square.length;
     const rotatedMatrix = [];

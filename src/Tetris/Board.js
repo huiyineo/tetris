@@ -182,7 +182,7 @@ class Board extends React.Component {
     return 1;
   }
 
-  moveBlock() {    
+  moveBlock() {
     if (this.state.inDrop) {
       return;
     }
@@ -206,7 +206,7 @@ class Board extends React.Component {
 
   shiftLeftRight(i) {
     if (this.state.inDrop) {
-      return;
+      return false;
     }
     const content = this.state.block.content;
     const finalY = this.state.blockY + i;
@@ -216,7 +216,10 @@ class Board extends React.Component {
       !this.hitNotMovingDot(0, i)
     ) {
       this.setState({ blockY: finalY });
+      return true;
     }
+
+    return false;
   }
 
   ableToShiftLeftRight(blockY, content) {
@@ -229,10 +232,10 @@ class Board extends React.Component {
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
-  getExtraBlockToWallKick(blockY, currentBlock, NewBlock) {
+  getExtraBlockToWallKick(blockY, newBlock) {
     //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
-    let newBlockLengthArray = NewBlock[0]
-      .map((x, idx) => NewBlock.reduce((sum, curr) => sum + curr[idx], 0))
+    let newBlockLengthArray = newBlock[0]
+      .map((x, idx) => newBlock.reduce((sum, curr) => sum + curr[idx], 0))
       .map((x) => (x > 0 ? 1 : 0));
 
     let newBlockLength =
@@ -250,22 +253,32 @@ class Board extends React.Component {
   rotateBlock() {
     if (this.state.inDrop) {
       return;
-    }
-    const block = this.state.block;
-    var rotatedBlock = utils.rotateMatrix(block.content);
+    }    
+    const block = utils.rotateBlock(this.state.block);
 
-    block.content = rotatedBlock;
-    this.setState({ block: block });
-
-    if (this.state.blockY > 0) {
+    //need to wall kick both left/right
+    //Only need to kick and kick success then set rotate
+    if (
+      this.state.blockY > 0 &&
+      this.state.blockY < this.state.board[0].length - 1
+    ) {
       let right = this.getExtraBlockToWallKick(
         this.state.blockY,
-        block.content,
-        rotatedBlock
+        block.content
       );
-      if (right === 0) return;
-      this.shiftLeftRight(right);
+      if (right !== 0) {
+        if (!this.shiftLeftRight(right)) {
+          return;
+        }
+      }
     }
+
+    //Set rotate
+    this.setState({
+      block: block,
+      blockX: this.state.blockX + block.transformX,
+      blockY: this.state.blockY + block.transformY,
+    });
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
@@ -275,7 +288,7 @@ class Board extends React.Component {
 
     const block = this.state.block.content;
     const lenX = block.length;
-    
+
     const x = rowIdx - this.state.blockX;
     const y = colIdx - this.state.blockY + this.getYOffset(block);
 
