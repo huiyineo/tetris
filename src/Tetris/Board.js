@@ -131,9 +131,9 @@ class Board extends React.Component {
   getYOffset(block) {
     //find the leftmost block
     return block[0]
-      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-      .map((x) => (x > 0 ? 1 : 0))
-      .indexOf(1);
+    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+    .map((x) => (x > 0 ? 1 : 0))
+    .indexOf(1);
   }
 
   hitNotMovingDot(moveX = 0, moveY = 0) {
@@ -224,28 +224,25 @@ class Board extends React.Component {
 
   ableToShiftLeftRight(blockY, content) {
     //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
-    let sumsOfBlock = content[0]
-      .map((x, idx) => content.reduce((sum, curr) => sum + curr[idx], 0))
-      .map((x) => (x > 0 ? 1 : 0));
+    let sumsOfBlock = this.getLengthArray(content);
     var rightEdge =
-      blockY + sumsOfBlock.lastIndexOf(1) - sumsOfBlock.indexOf(1);
+      blockY + sumsOfBlock.lastIndexOf(1);
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
   getExtraBlockToWallKick(blockY, newBlock) {
     //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
-    let newBlockLengthArray = newBlock[0]
-      .map((x, idx) => newBlock.reduce((sum, curr) => sum + curr[idx], 0))
-      .map((x) => (x > 0 ? 1 : 0));
-
-    let newBlockLength =
-      newBlockLengthArray.lastIndexOf(1) - newBlockLengthArray.indexOf(1);
-    var rightEdge = blockY + newBlockLength;
-    console.log('right edge ' + rightEdge)
-    console.log('return ' + (this.boardColCount - 1 - rightEdge))
-    return this.boardColCount - 1 - rightEdge < 0
-      ? this.boardColCount - 1 - rightEdge
+    let newBlockLengthArray = this.getLengthArray(newBlock);
+    var rightEdgeIndex = blockY + newBlockLengthArray.lastIndexOf(1);
+    return this.boardColCount - 1 - rightEdgeIndex < 0
+      ? this.boardColCount - 1 - rightEdgeIndex
       : 0;
+  }
+
+  getLengthArray(block){
+    return block[0]
+    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+    .map((x) => (x > 0 ? 1 : 0));
   }
 
   printBlock() {
@@ -257,33 +254,27 @@ class Board extends React.Component {
       return;
     }    
     const block = utils.rotateBlock(this.state.block);
-
+    if (this.state.blockX + block.transformX < 0){
+      return;
+    }
     //need to wall kick both left/right
     //Only need to kick and kick success then set rotate
+    let right = 0;
     if (
       this.state.blockY >= 0 &&
       this.state.blockY < this.state.board[0].length
     ) {
-      let right = this.getExtraBlockToWallKick(
-        this.state.blockY,
+        right = this.getExtraBlockToWallKick(
+        this.state.blockY + block.transformY,
         block.content
       );
-      if (right !== 0) {
-        if (!this.shiftLeftRight(right)) {
-          return;
-        }
-      }
     }
-    else{
-      //Set rotate
-      this.setState({
-        block: block,
-        blockX: this.state.blockX + block.transformX,
-        blockY: this.state.blockY + block.transformY,
-      });
-    }
-
-    
+    //Set rotate
+    this.setState({
+      block: block,
+      blockX: this.state.blockX + block.transformX,
+      blockY: Math.max(this.state.blockY + block.transformY + right, 0),
+    });
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
