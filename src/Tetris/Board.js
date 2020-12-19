@@ -241,6 +241,8 @@ class Board extends React.Component {
     let newBlockLength =
       newBlockLengthArray.lastIndexOf(1) - newBlockLengthArray.indexOf(1);
     var rightEdge = blockY + newBlockLength;
+    console.log('right edge ' + rightEdge)
+    console.log('return ' + (this.boardColCount - 1 - rightEdge))
     return this.boardColCount - 1 - rightEdge < 0
       ? this.boardColCount - 1 - rightEdge
       : 0;
@@ -259,8 +261,8 @@ class Board extends React.Component {
     //need to wall kick both left/right
     //Only need to kick and kick success then set rotate
     if (
-      this.state.blockY > 0 &&
-      this.state.blockY < this.state.board[0].length - 1
+      this.state.blockY >= 0 &&
+      this.state.blockY < this.state.board[0].length
     ) {
       let right = this.getExtraBlockToWallKick(
         this.state.blockY,
@@ -272,13 +274,16 @@ class Board extends React.Component {
         }
       }
     }
+    else{
+      //Set rotate
+      this.setState({
+        block: block,
+        blockX: this.state.blockX + block.transformX,
+        blockY: this.state.blockY + block.transformY,
+      });
+    }
 
-    //Set rotate
-    this.setState({
-      block: block,
-      blockX: this.state.blockX + block.transformX,
-      blockY: this.state.blockY + block.transformY,
-    });
+    
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
