@@ -162,13 +162,14 @@ const utils = {
     const relTransform = relTransformList[block.name];
 
     let nextIdx = (block.index + 1) % relTransform.length;
-    block.content = blocks[nextIdx % blocks.length];
-    block.index = nextIdx;
+    let newBlock = JSON.parse(JSON.stringify(block));
+    newBlock.content = blocks[nextIdx % blocks.length];
+    newBlock.index = nextIdx;
     
-    block.transformX = relTransform[nextIdx][0];
-    block.transformY = relTransform[nextIdx][1];
+    newBlock.transformX = relTransform[nextIdx][0];
+    newBlock.transformY = relTransform[nextIdx][1];
 
-    return block;    
+    return newBlock;    
   },
 
   rotateMatrix: (square) => {

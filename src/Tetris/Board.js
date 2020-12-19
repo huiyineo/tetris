@@ -129,13 +129,17 @@ class Board extends React.Component {
   }
 
   hitNotMovingDot(moveX = 0, moveY = 0) {
-    const board = this.state.board;
     const block = this.state.block.content;
-    const lenX = block.length;
-    const lenY = block[0].length;
     const x = this.state.blockX + moveX;
     const y = this.state.blockY + moveY;
+    return this.blockHitNotMovingDot(block, x, y)
+  }
 
+  blockHitNotMovingDot(block, x, y){
+    const board = this.state.board;
+    const lenX = block.length;
+    const lenY = block[0].length;
+    
     for (let i = lenX - 1; i >= 0; i--) {
       for (let j = 0; j < lenY; j++) {
         if (
@@ -149,7 +153,6 @@ class Board extends React.Component {
         }
       }
     }
-
     return false;
   }
 
@@ -215,26 +218,24 @@ class Board extends React.Component {
   }
 
   ableToShiftLeftRight(blockY, content) {
-    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
-    let sumsOfBlock = this.getLengthArray(content);
     var rightEdge =
-      blockY + sumsOfBlock.lastIndexOf(1);
+      blockY + this.getBlockLastIndexOfOne(content);
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
   getExtraBlockToWallKick(blockY, newBlock) {
-    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
-    let newBlockLengthArray = this.getLengthArray(newBlock);
-    var rightEdgeIndex = blockY + newBlockLengthArray.lastIndexOf(1);
+    var rightEdgeIndex = blockY + this.getBlockLastIndexOfOne(newBlock);
     return this.boardColCount - 1 - rightEdgeIndex < 0
       ? this.boardColCount - 1 - rightEdgeIndex
       : 0;
   }
 
-  getLengthArray(block){
+  getBlockLastIndexOfOne(block){
+    //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
     return block[0]
     .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-    .map((x) => (x > 0 ? 1 : 0));
+    .map((x) => (x > 0 ? 1 : 0))
+    .lastIndexOf(1);
   }
 
   printBlock() {
@@ -246,7 +247,7 @@ class Board extends React.Component {
       return;
     }    
     const block = utils.rotateBlock(this.state.block);
-    if (this.state.blockX + block.transformX < 0){
+    if (this.state.blockX + block.transformX - this.getLastRowHasDot(block.content) < 0){
       return;
     }
     //need to wall kick both left/right
@@ -261,12 +262,15 @@ class Board extends React.Component {
         block.content
       );
     }
-    //Set rotate
-    this.setState({
-      block: block,
-      blockX: this.state.blockX + block.transformX,
-      blockY: Math.max(this.state.blockY + block.transformY + right, 0),
-    });
+    let newBlockX = this.state.blockX + block.transformX;
+    let newBlockY = Math.max(this.state.blockY + block.transformY + right, 0);
+    if (!this.blockHitNotMovingDot(block.content, newBlockX, newBlockY)){
+      this.setState({
+        block: block,
+        blockX: newBlockX,
+        blockY: newBlockY,
+      });
+    }
   }
 
   checkIsActivated(value, rowIdx, colIdx) {
