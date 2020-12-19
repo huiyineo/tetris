@@ -247,7 +247,7 @@ class Board extends React.Component {
       return;
     }    
     const block = utils.rotateBlock(this.state.block);
-    if (this.state.blockX + block.transformX + this.getLastRowHasDot(block.content) > this.state.boardRowCount){
+    if (this.state.blockX + block.transformX + this.getLastRowHasDot(block.content) > this.boardRowCount){
       return;
     }
     //need to wall kick both left/right
