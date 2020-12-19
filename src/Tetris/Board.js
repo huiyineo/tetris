@@ -110,7 +110,7 @@ class Board extends React.Component {
     const lenX = block.length;
     const lenY = block[0].length;
     const x = this.state.blockX;
-    const y = this.state.blockY - this.getYOffset(block);
+    const y = this.state.blockY;
 
     for (let i = lenX - 1; i >= 0; i--) {
       for (let j = 0; j < lenY; j++) {
@@ -128,21 +128,13 @@ class Board extends React.Component {
     return board;
   }
 
-  getYOffset(block) {
-    //find the leftmost block
-    return block[0]
-    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-    .map((x) => (x > 0 ? 1 : 0))
-    .indexOf(1);
-  }
-
   hitNotMovingDot(moveX = 0, moveY = 0) {
     const board = this.state.board;
     const block = this.state.block.content;
     const lenX = block.length;
     const lenY = block[0].length;
     const x = this.state.blockX + moveX;
-    const y = this.state.blockY + moveY - this.getYOffset(block);
+    const y = this.state.blockY + moveY;
 
     for (let i = lenX - 1; i >= 0; i--) {
       for (let j = 0; j < lenY; j++) {
@@ -286,7 +278,7 @@ class Board extends React.Component {
     const lenX = block.length;
 
     const x = rowIdx - this.state.blockX;
-    const y = colIdx - this.state.blockY + this.getYOffset(block);
+    const y = colIdx - this.state.blockY;
 
     return x >= 0 && x < lenX && y >= 0 && block[x][y] === 1;
   }
@@ -301,7 +293,7 @@ class Board extends React.Component {
     const lenY = block[0].length;
 
     const x = rowIdx - this.state.blockX;
-    const y = colIdx - this.state.blockY + this.getYOffset(block);
+    const y = colIdx - this.state.blockY;
 
     return x >= 0 && x < lenX && y >= 0 && y < lenY;
   }
