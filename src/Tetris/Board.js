@@ -2,6 +2,7 @@ import React from "react";
 import Dot from "./Commons/Dot";
 import Block from "./Commons/Block";
 import Score from "./Commons/Score";
+import Speed from "./Commons/Speed";
 import utils from "../Utils/utils";
 
 class Board extends React.Component {
@@ -20,7 +21,7 @@ class Board extends React.Component {
       blockY: 4,
       blockNo: 2,
       intervalId: null,
-      speed: 400,
+      speed: 1000,
       inDrop: false,
       clearedLines: 0,
     };
@@ -39,6 +40,7 @@ class Board extends React.Component {
   }
 
   setIntervalNormalMoveDown() {
+    clearInterval(this.state.intervalId);
     const intervalId = setInterval(() => {
       this.moveBlock();
     }, this.state.speed);
@@ -90,18 +92,55 @@ class Board extends React.Component {
     const newRows = this.getRepeatedRows(board.length - filtered.length);
 
     const filledRowCount = this.boardRowCount - filtered.length;
-    this.props.updateScores(this.calculateScores(filledRowCount));
+
+    if (filledRowCount > 0) {
+      this.updateClearedLines(filledRowCount);
+      const level = this.calculateLevel();
+      console.log("level: " + level);
+      this.updateSpeed(level);
+      this.props.updateLevels(level);
+      this.props.updateScores(this.calculateScores(level, filledRowCount));
+    }
 
     this.setState({ board: newRows.concat(filtered) });
   }
 
-  calculateScores(line) {
-    const cleared = this.state.clearedLines + line;
-    //Try fixed level first with 10 rows first
-    const level = parseInt(cleared / 10);
+  updateSpeed(level) {
+    const speed = Speed.getSpeed(level);
+    this.setState({ speed: speed });
 
+    this.setIntervalNormalMoveDown();
+    console.log("speed: " + speed);
+  }
+
+  updateClearedLines(line) {
+    const cleared = this.state.clearedLines + line;
     this.setState({ clearedLines: cleared });
+
+    console.log("line: " + cleared);
+  }
+
+  calculateScores(level, line) {
     return Score.linePoints(level, line);
+  }
+
+  calculateLevel() {
+    const cleared = this.state.clearedLines;
+    if (cleared === 0) return 1;
+    //1. Fixed goal 10 rows
+    //return parseInt(cleared / 10) + 1;
+
+    //2. Fixed variable: 1 5 rows, 2 10 rows, 3 15 rows,...
+    const totalLevel = parseInt(cleared / 5);
+    let i = 1;
+    let sum = 1;
+    while (sum <= totalLevel) {
+      i++;
+      sum += i;
+    }
+    return i;
+
+    //3. Line values to be variable-goal level
   }
 
   drawBlockInBoard(value) {
@@ -132,14 +171,14 @@ class Board extends React.Component {
     const block = this.state.block.content;
     const x = this.state.blockX + moveX;
     const y = this.state.blockY + moveY;
-    return this.blockHitNotMovingDot(block, x, y)
+    return this.blockHitNotMovingDot(block, x, y);
   }
 
-  blockHitNotMovingDot(block, x, y){
+  blockHitNotMovingDot(block, x, y) {
     const board = this.state.board;
     const lenX = block.length;
     const lenY = block[0].length;
-    
+
     for (let i = lenX - 1; i >= 0; i--) {
       for (let j = 0; j < lenY; j++) {
         if (
@@ -218,8 +257,7 @@ class Board extends React.Component {
   }
 
   ableToShiftLeftRight(blockY, content) {
-    var rightEdge =
-      blockY + this.getBlockLastIndexOfOne(content);
+    var rightEdge = blockY + this.getBlockLastIndexOfOne(content);
     return blockY >= 0 && rightEdge < this.boardColCount;
   }
 
@@ -230,12 +268,12 @@ class Board extends React.Component {
       : 0;
   }
 
-  getBlockLastIndexOfOne(block){
+  getBlockLastIndexOfOne(block) {
     //[[0,0,0],[0,1,1],[1,1,0]] => [1,1,1]
     return block[0]
-    .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
-    .map((x) => (x > 0 ? 1 : 0))
-    .lastIndexOf(1);
+      .map((x, idx) => block.reduce((sum, curr) => sum + curr[idx], 0))
+      .map((x) => (x > 0 ? 1 : 0))
+      .lastIndexOf(1);
   }
 
   printBlock() {
@@ -245,9 +283,14 @@ class Board extends React.Component {
   rotateBlock() {
     if (this.state.inDrop) {
       return;
-    }    
+    }
     const block = utils.rotateBlock(this.state.block);
-    if (this.state.blockX + block.transformX + this.getLastRowHasDot(block.content) > this.boardRowCount){
+    if (
+      this.state.blockX +
+        block.transformX +
+        this.getLastRowHasDot(block.content) >
+      this.boardRowCount
+    ) {
       return;
     }
     //need to wall kick both left/right
@@ -257,14 +300,14 @@ class Board extends React.Component {
       this.state.blockY >= 0 &&
       this.state.blockY < this.state.board[0].length
     ) {
-        right = this.getExtraBlockToWallKick(
+      right = this.getExtraBlockToWallKick(
         this.state.blockY + block.transformY,
         block.content
       );
     }
     let newBlockX = this.state.blockX + block.transformX;
     let newBlockY = Math.max(this.state.blockY + block.transformY + right, 0);
-    if (!this.blockHitNotMovingDot(block.content, newBlockX, newBlockY)){
+    if (!this.blockHitNotMovingDot(block.content, newBlockX, newBlockY)) {
       this.setState({
         block: block,
         blockX: newBlockX,

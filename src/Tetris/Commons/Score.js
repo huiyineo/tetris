@@ -1,9 +1,9 @@
 const Score = {
   linePoints: (level, line) => {
-    if (level < 0 || line < 1) {
+    if (level < 1 || line < 1) {
       return 0;
     }
-    level++;
+    
     switch (line) {
       case 1:
         return 40 * level;

@@ -16,13 +16,14 @@ class Tetris extends React.Component {
       currentBlockLetter: Block.newTgm3Random(),
       nextBlockLetter: Block.tgm3Random(),
       scores: 0,
-      level: 0,
+      level: 1,
     };
 
     //To bind event from child
     this.newBlockHandler = this.newBlockHandler.bind(this);
     this.rotateBlockHandler = this.rotateBlockHandler.bind(this);
     this.updateScores = this.updateScores.bind(this);
+    this.updateLevels = this.updateLevels.bind(this);
     this.drop = this.drop.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
     this.down = this.down.bind(this);
@@ -123,6 +124,10 @@ class Tetris extends React.Component {
     this.setState({ scores: this.state.scores + scores });
   }
 
+  updateLevels(level) {
+    this.setState({ level: level});
+  }
+
   render() {
     return (
       <>
@@ -138,6 +143,7 @@ class Tetris extends React.Component {
                 movingBlock={this.state.currentBlockLetter}
                 requestNewBlock={this.newBlockHandler}
                 updateScores={this.updateScores}
+                updateLevels={this.updateLevels}
               />
             </div>
             <div className="game-information">
