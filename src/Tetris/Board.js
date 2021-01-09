@@ -23,7 +23,7 @@ class Board extends React.Component {
       intervalId: null,
       speed: 1000,
       inDrop: false,
-      clearedLines: 0,
+      clearedLinePoint: 0,
     };
   }
 
@@ -114,10 +114,29 @@ class Board extends React.Component {
   }
 
   updateClearedLines(line) {
-    const cleared = this.state.clearedLines + line;
-    this.setState({ clearedLines: cleared });
+    let point = 0;
+    // eslint-disable-next-line default-case
+    switch (line) {
+      case 1:
+        point = 1;
+        break;
+      case 2:
+        point = 3;
+        break;
+      case 3:
+        point = 5;
+        break;
+      case 4:
+        point = 8;
+        break;
+    }
 
-    console.log("line: " + cleared);
+    const cleared = this.state.clearedLinePoint + point;
+    this.setState({ clearedLinePoint: cleared });
+
+    console.log(
+      "line: " + line + ", point: " + point + ", cleared: " + cleared
+    );
   }
 
   calculateScores(level, line) {
@@ -125,7 +144,7 @@ class Board extends React.Component {
   }
 
   calculateLevel() {
-    const cleared = this.state.clearedLines;
+    const cleared = this.state.clearedLinePoint;
     if (cleared === 0) return 1;
     //1. Fixed goal 10 rows
     //return parseInt(cleared / 10) + 1;
