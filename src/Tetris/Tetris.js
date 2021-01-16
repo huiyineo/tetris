@@ -27,8 +27,8 @@ class Tetris extends React.Component {
     this.drop = this.drop.bind(this);
     this.mouseUp = this.mouseUp.bind(this);
     this.down = this.down.bind(this);
-    this.mouseUp = this.mouseUp.bind(this);
-
+    this.playPause = this.playPause.bind(this);
+    
     //To create Refs with child
     this.board = React.createRef();
   }
@@ -45,34 +45,42 @@ class Tetris extends React.Component {
   }
 
   rotateBlockHandler() {
-    this.board.current.rotateBlock();
+    this.inPlay() && this.board.current.rotateBlock();
   }
 
   moveBlockHandler(i) {
-    this.board.current.shiftLeftRight(i);
+    this.inPlay() && this.board.current.shiftLeftRight(i);
   }
 
   drop() {
-    this.board.current.drop();
+    this.inPlay() && this.board.current.drop();
   }
 
   async down() {
-    await this.board.current.down();
+    if (this.inPlay()){
+      await this.board.current.down();
+    }
   }
 
   mouseUp() {
-    if (this.board.current) {
+    if (this.board.current && this.inPlay()) {
       this.board.current.mouseUp();
-    } else {
-      console.log("How come board is NULL here");
     }
+  }
+
+  playPause() {
+    this.board.current.playPause();
+  }
+
+  inPlay() {
+    return this.board.current.state.inPlay;
   }
 
   handleKeyDown = (e) => {
     e.preventDefault();
     switch (e.keyCode) {
       case 32: //Space
-        this.drop(); // can rename to hard drop
+        this.drop();
         break;
       case 37: //Left arrow
         this.moveBlockHandler(-1);
@@ -84,12 +92,11 @@ class Tetris extends React.Component {
         this.moveBlockHandler(1);
         break;
       case 40: //Down arrow
-        //Soft drop
         this.down();
         break;
       case 80: //P
       case 112: //p
-        //Pause play
+        this.playPause();
         break;
       case 82: //R
       case 114: //r
@@ -161,12 +168,13 @@ class Tetris extends React.Component {
             <div className="game-control">
               <Control
                 resetGame={this.props.resetGame}
-                rotateBlock={this.rotateBlockHandler}
+                rotateBlock={() => this.rotateBlockHandler}
                 moveLeft={() => this.moveBlockHandler(-1)}
                 moveRight={() => this.moveBlockHandler(1)}
                 drop={this.drop}
                 down={this.down}
                 mouseUp={this.mouseUp}
+                playPause={this.playPause}
               />
             </div>
           </div>

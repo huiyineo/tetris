@@ -24,6 +24,7 @@ class Board extends React.Component {
       speed: 1000,
       inDrop: false,
       clearedLinePoint: 0,
+      inPlay: true
     };
   }
 
@@ -418,6 +419,17 @@ class Board extends React.Component {
   mouseUp() {
     this.mouseUpForDownButton = true;
     this.setIntervalNormalMoveDown();
+  }
+
+  playPause(){
+    if (this.state.inPlay) {
+      clearInterval(this.state.intervalId);
+      this.setState({ inPlay: false });
+    }
+    else {
+      this.setIntervalNormalMoveDown();
+      this.setState({ inPlay: true });
+    }
   }
 
   render() {

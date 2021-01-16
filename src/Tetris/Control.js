@@ -10,7 +10,7 @@ class Control extends React.Component {
         <button onMouseDown={this.props.down} onMouseUp={this.props.mouseUp}>Down (&darr;)</button>
         <button onClick={this.props.drop}>Drop (SPACE)</button>
         <br/>
-        <button onClick={() => {}}>Play Pause (P)</button>
+        <button onClick={this.props.playPause}>Play Pause (P)</button>
         <button onClick={this.props.resetGame}>Reset (R)</button>
       </>
     );
